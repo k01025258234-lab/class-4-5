@@ -3,21 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎨 4학년 5반 크레파스 자유게시판</title>
-    <!-- Web App / PWA Meta tags for Home Screen Icon -->
+    <title>🎨 4학년 5반 추억보관소</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="4-5 자유게시판">
+    <meta name="apple-mobile-web-app-title" content="4-5 추억보관소">
     <link rel="apple-touch-icon" href="https://api.iconify.design/twemoji:crayons.svg">
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Jua&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- QR Code Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <script>
@@ -78,16 +74,16 @@
             background-size: 24px 24px;
             font-family: 'Gaegu', cursive;
             font-size: 1.25rem;
+            transition: background-color 0.3s ease;
         }
     </style>
 </head>
-<body class="min-h-screen text-gray-800 pb-12">
+<body id="appBody" class="min-h-screen text-gray-800 pb-12">
 
-    <!-- 1. LOGIN MODAL -->
     <div id="loginModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
         <div class="crayon-box bg-white p-8 max-w-md w-full text-center relative bg-crayon-yellow">
             <div class="text-5xl mb-3">🖍️</div>
-            <h1 class="text-3xl font-bold font-jua text-gray-800 mb-2">4학년 5반 자유게시판</h1>
+            <h1 class="text-3xl font-bold font-jua text-gray-800 mb-2">4학년 5반 추억보관소</h1>
             <p class="text-gray-700 text-lg mb-6">게시판에 들어가려면 우리반 암호를 입력해줘!</p>
             
             <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
@@ -105,7 +101,6 @@
         </div>
     </div>
 
-    <!-- 2. QR CODE MODAL -->
     <div id="qrModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
         <div class="crayon-box bg-white p-6 max-w-sm w-full text-center relative bg-crayon-blue">
             <h3 class="text-2xl font-bold font-jua text-gray-800 mb-2">📲 우리반 QR코드 공유</h3>
@@ -115,20 +110,14 @@
                 <div id="qrcodeCanvas"></div>
             </div>
 
-            <div class="text-xs text-gray-600 mb-4 bg-white/70 p-2 rounded border border-gray-400">
-                💡 팁: 브라우저 메뉴의 <b>'홈 화면에 추가'</b>를 누르면 진짜 앱처럼 아이콘이 생성되어 수시로 들러볼 수 있어요!
-            </div>
-
             <button onclick="toggleQRModal()" class="crayon-btn w-full bg-crayon-yellow py-2 text-xl font-bold">
                 닫기
             </button>
         </div>
     </div>
 
-    <!-- MAIN CONTAINER -->
     <div id="mainContent" class="hidden max-w-4xl mx-auto px-4 pt-6">
 
-        <!-- HEADER -->
         <header class="crayon-box bg-crayon-yellow p-6 mb-6 text-center relative overflow-hidden">
             <button onclick="toggleQRModal()" class="absolute top-3 right-3 crayon-btn bg-white hover:bg-gray-100 text-sm px-3 py-1 flex items-center gap-1">
                 📱 QR코드 공유
@@ -136,18 +125,63 @@
 
             <div class="text-4xl mb-1">🎨</div>
             <h1 class="text-4xl md:text-5xl font-jua text-gray-800 mb-2">
-                🌟 4학년 5반 시끌벅적 자유게시판 🌟
+                🌟 4학년 5반 추억보관소 🌟
             </h1>
             <p class="text-xl text-gray-700">우리들의 예쁜 추억과 재미있는 이야기를 나눠요!</p>
             
             <div class="mt-4 flex flex-wrap justify-center gap-2 text-sm font-bold">
                 <span class="bg-white px-3 py-1 rounded-full border-2 border-gray-800">🔒 반 암호: 0405</span>
-                <span class="bg-white px-3 py-1 rounded-full border-2 border-gray-800">✍️ 실명 작성 필수</span>
+                <span class="bg-white px-3 py-1 rounded-full border-2 border-gray-800">🏫 4-5반 명단 전용</span>
                 <span class="bg-crayon-pink px-3 py-1 rounded-full border-2 border-gray-800 text-gray-800">🌸 욕설 자동 차단</span>
+                <button onclick="toggleAdminPanel()" class="bg-crayon-purple px-3 py-1 rounded-full border-2 border-gray-800 text-gray-800 hover:bg-purple-300">
+                    👑 관리자 도구 (노은율 전용)
+                </button>
             </div>
         </header>
 
-        <!-- TAB NAVIGATION -->
+        <div id="adminPanel" class="hidden crayon-box bg-crayon-purple p-6 mb-6 space-y-4">
+            <div class="flex justify-between items-center border-b-2 border-gray-800 pb-2">
+                <h3 class="text-2xl font-jua text-gray-800">👑 관리자 대시보드 (최고 관리자: 노은율)</h3>
+                <span class="text-sm bg-white px-2 py-0.5 rounded border border-gray-800">Master Admin</span>
+            </div>
+
+            <div class="bg-white/60 p-3 rounded-xl border-2 border-gray-800">
+                <label class="block font-bold text-gray-800 mb-1">👑 관리자 명단 관리 (추가 및 지정):</label>
+                <div class="flex gap-2 mb-2">
+                    <input type="text" id="newAdminInput" placeholder="관리자로 지정할 이름" class="crayon-input p-1.5 text-base bg-white w-48">
+                    <button onclick="addAdmin()" class="crayon-btn bg-crayon-yellow px-3 py-1 text-base font-bold">
+                        ⭐ 관리자 추가
+                    </button>
+                </div>
+                <div id="adminList" class="flex flex-wrap gap-2">
+                    </div>
+            </div>
+
+            <div>
+                <label class="block font-bold text-gray-800 mb-2">🎨 게시판 배경 테마 변경:</label>
+                <div class="flex gap-2 flex-wrap">
+                    <button onclick="changeBackground('#FAF6EF')" class="crayon-btn bg-[#FAF6EF] px-3 py-1 text-sm font-bold">아이보리</button>
+                    <button onclick="changeBackground('#FFE5EC')" class="crayon-btn bg-[#FFE5EC] px-3 py-1 text-sm font-bold">파스텔 핑크</button>
+                    <button onclick="changeBackground('#E8F5E9')" class="crayon-btn bg-[#E8F5E9] px-3 py-1 text-sm font-bold">민트 그린</button>
+                    <button onclick="changeBackground('#F3E5F5')" class="crayon-btn bg-[#F3E5F5] px-3 py-1 text-sm font-bold">라벤더 퍼플</button>
+                    <button onclick="changeBackground('#E3F2FD')" class="crayon-btn bg-[#E3F2FD] px-3 py-1 text-sm font-bold">하늘색</button>
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-bold text-gray-800 mb-2">👥 우리반 학생 명단 관리 (초대 및 방출):</label>
+                <div class="flex gap-2 mb-3">
+                    <input type="text" id="newMemberInput" placeholder="추가할 학생 이름" class="crayon-input p-2 text-base bg-white w-48">
+                    <button onclick="addMember()" class="crayon-btn bg-crayon-green px-4 py-1 text-base font-bold">
+                        ➕ 초대 (추가)
+                    </button>
+                </div>
+                
+                <div id="rosterList" class="flex flex-wrap gap-2 max-h-36 overflow-y-auto bg-white p-3 rounded-xl border-2 border-gray-800">
+                    </div>
+            </div>
+        </div>
+
         <div class="flex justify-center gap-4 mb-6">
             <button id="tabShortBtn" onclick="switchTab('short')" 
                     class="crayon-btn bg-crayon-blue px-6 py-3 text-2xl font-bold flex items-center gap-2">
@@ -159,13 +193,11 @@
             </button>
         </div>
 
-        <!-- WRITE POST BUTTON / FORM TOGGLE -->
         <div class="mb-8">
             <button onclick="toggleWriteForm()" class="crayon-btn w-full bg-crayon-green hover:bg-green-300 py-4 text-2xl font-bold flex items-center justify-center gap-2">
-                ✍️ 새 글 쓰기 (바른 고운 말을 사용해요!)
+                ✍️ 새 글 쓰기 (우리반 실명 필수!)
             </button>
 
-            <!-- WRITE FORM -->
             <div id="writeFormContainer" class="hidden crayon-box bg-white p-6 mt-4 relative">
                 <h3 class="text-2xl font-jua mb-4 border-b-2 border-dashed border-gray-400 pb-2">
                     📝 <span id="formTitleText">짧은 글 작성하기</span>
@@ -174,8 +206,8 @@
                 <form id="postForm" onsubmit="handleCreatePost(event)" class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block font-bold text-gray-700 mb-1">내 이름 (실명) *</label>
-                            <input type="text" id="authorName" placeholder="예: 김민수" required 
+                            <label class="block font-bold text-gray-700 mb-1">내 이름 (우리반 실명만 가능) *</label>
+                            <input type="text" id="authorName" placeholder="예: 노은율" required 
                                    class="crayon-input w-full p-2.5 bg-gray-50 text-lg">
                         </div>
                         <div id="photoUrlGroup" class="hidden">
@@ -204,20 +236,17 @@
             </div>
         </div>
 
-        <!-- POSTS FEED CONTAINER -->
         <main>
             <div id="shortFeed" class="space-y-6"></div>
             <div id="photoFeed" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6"></div>
         </main>
     </div>
 
-    <!-- FIREBASE & CORE LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Firebase Configuration (Uses Environment Config or Fallback)
         const firebaseConfig = typeof __firebase_config !== 'undefined' 
             ? JSON.parse(__firebase_config) 
             : {
@@ -237,10 +266,37 @@
         let currentUser = null;
         let posts = [];
         let currentTab = 'short';
+        let isAdminActive = false;
 
         // -----------------------------------------------------------------
-        // PROFANITY FILTERING LIST
+        // 관리자 명단 (최고 관리자: 노은율)
         // -----------------------------------------------------------------
+        let ADMIN_MEMBERS = ['노은율'];
+
+        // -----------------------------------------------------------------
+        // 4학년 5반 허용 명단 (선생님 + 학생)
+        // -----------------------------------------------------------------
+        let ALLOWED_MEMBERS = [
+            '전영주선생님', '전영주',
+            '강민정', '고은혁', '김민규', '김보윤', '김영훈', '김윤슬', '노은율', 
+            '문장우', '박리원', '서태희', '오도현', '우주하', '이다연', '이서준', 
+            '이소율', '이채은', '임세준', '조규원', '조하린', '차수연', '최유주', 
+            '한찬희', '구재이', '조승우', '조민준'
+        ];
+
+        window.isMemberAllowed = function(name) {
+            if (!name) return false;
+            const cleanName = name.replace(/\s+/g, '');
+            return ALLOWED_MEMBERS.some(m => m.replace(/\s+/g, '') === cleanName);
+        };
+
+        window.isAdminUser = function(name) {
+            if (!name) return false;
+            const cleanName = name.replace(/\s+/g, '');
+            return ADMIN_MEMBERS.some(a => a.replace(/\s+/g, '') === cleanName);
+        };
+
+        // PROFANITY FILTERING
         const BAD_WORDS_LIST = [
             '바보', '멍청이', '지랄', '시발', '씨발', '씨벌', '씨바', '개새끼', '미친', '미친놈', '미친년',
             '꺼져', '닥쳐', '병신', '떵개', '느금마', '느꺼니', '애자', '찐따', '쓰레기', '뒤져', '죽어라',
@@ -279,7 +335,6 @@
             }
         });
 
-        // Realtime Firestore Listener
         function listenToPosts() {
             if (!currentUser) return;
             const postsCol = collection(db, 'artifacts', appId, 'public', 'data', 'posts');
@@ -289,7 +344,6 @@
                     id: doc.id,
                     ...doc.data()
                 }));
-                // Sort by timestamp desc
                 posts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                 renderPosts();
             }, (error) => {
@@ -297,7 +351,80 @@
             });
         }
 
-        // Global Handlers
+        // Admin Management Controls
+        window.toggleAdminPanel = function() {
+            const adminPanel = document.getElementById('adminPanel');
+            adminPanel.classList.toggle('hidden');
+            renderRoster();
+            renderAdminList();
+        };
+
+        window.renderAdminList = function() {
+            const container = document.getElementById('adminList');
+            container.innerHTML = ADMIN_MEMBERS.map(name => `
+                <span class="bg-crayon-yellow px-3 py-1 rounded-full border border-gray-800 text-sm font-bold flex items-center gap-1">
+                    👑 ${name}
+                    ${name === '노은율' ? '' : `<button onclick="removeAdmin('${name}')" class="text-red-500 font-bold ml-1 hover:text-red-700">✕</button>`}
+                </span>
+            `).join('');
+        };
+
+        window.addAdmin = function() {
+            const input = document.getElementById('newAdminInput');
+            const name = input.value.trim();
+            if (name && isMemberAllowed(name) && !ADMIN_MEMBERS.includes(name)) {
+                ADMIN_MEMBERS.push(name);
+                input.value = '';
+                renderAdminList();
+                showToast(`'${name}' 님이 관리자로 지정되었습니다! 👑`);
+            } else if (!isMemberAllowed(name)) {
+                showToast("우리반 명단에 있는 이름만 관리자로 지정할 수 있어요!");
+            }
+        };
+
+        window.removeAdmin = function(name) {
+            if (confirm(`'${name}' 님의 관리자 권한을 해제하시겠습니까?`)) {
+                ADMIN_MEMBERS = ADMIN_MEMBERS.filter(a => a !== name);
+                renderAdminList();
+                showToast(`'${name}' 님의 관리자 권한이 해제되었습니다.`);
+            }
+        };
+
+        window.changeBackground = function(color) {
+            document.getElementById('appBody').style.backgroundColor = color;
+            showToast("배경 테마가 변경되었습니다!");
+        };
+
+        window.renderRoster = function() {
+            const container = document.getElementById('rosterList');
+            container.innerHTML = ALLOWED_MEMBERS.map(name => `
+                <span class="bg-gray-100 px-3 py-1 rounded-full border border-gray-400 text-sm font-bold flex items-center gap-1">
+                    ${name}
+                    ${name === '노은율' ? '' : `<button onclick="removeMember('${name}')" class="text-red-500 font-bold ml-1 hover:text-red-700">✕</button>`}
+                </span>
+            `).join('');
+        };
+
+        window.addMember = function() {
+            const input = document.getElementById('newMemberInput');
+            const name = input.value.trim();
+            if (name && !ALLOWED_MEMBERS.includes(name)) {
+                ALLOWED_MEMBERS.push(name);
+                input.value = '';
+                renderRoster();
+                showToast(`'${name}' 학생이 명단에 추가되었습니다.`);
+            }
+        };
+
+        window.removeMember = function(name) {
+            if (confirm(`'${name}' 학생을 명단에서 방출하시겠습니까?`)) {
+                ALLOWED_MEMBERS = ALLOWED_MEMBERS.filter(m => m !== name);
+                renderRoster();
+                showToast(`'${name}' 학생이 명단에서 제외되었습니다.`);
+            }
+        };
+
+        // UI Handlers
         window.handleLogin = function(e) {
             e.preventDefault();
             const passwordInput = document.getElementById('classPassword').value;
@@ -365,8 +492,17 @@
 
             if (!author || !content) return;
 
+            if (isAdminUser(author)) {
+                isAdminActive = true;
+            }
+
+            if (!isMemberAllowed(author)) {
+                showWarningAlert("🔒 4학년 5반 전용 게시판", `'${author}' 이름은 우리반 명단에 없어요!`);
+                return;
+            }
+
             if (checkProfanity(author).hasBadWord || checkProfanity(content).hasBadWord) {
-                showWarningAlert("🌸 예쁜 말을 사용해요!", "게시글에 안 좋은 말이 들어있어 올릴 수 없어요. 고운 말로 바꿔 써볼까요?");
+                showWarningAlert("🌸 예쁜 말을 사용해요!", "게시글에 안 좋은 말이 들어있어 올릴 수 없어요.");
                 return;
             }
 
@@ -422,8 +558,17 @@
 
             if (!author || !text) return;
 
+            if (isAdminUser(author)) {
+                isAdminActive = true;
+            }
+
+            if (!isMemberAllowed(author)) {
+                showWarningAlert("🔒 4학년 5반 전용", `'${author}' 이름은 우리반 명단에 없어요!`);
+                return;
+            }
+
             if (checkProfanity(author).hasBadWord || checkProfanity(text).hasBadWord) {
-                showWarningAlert("🌸 고운 말을 사용해요!", "댓글에 나쁜 말이 들어있어 등록할 수 없어요.");
+                showWarningAlert("🌸 고운 말을 사용해요!", "댓글에 나쁜 말이 들어있어요.");
                 return;
             }
 
@@ -451,24 +596,75 @@
         };
 
         window.deletePost = async function(postId) {
-            const inputName = prompt("게시글을 삭제하려면 작성자 이름을 입력하세요:");
             const post = posts.find(p => p.id === postId);
 
-            if (post && inputName === post.author) {
-                if (currentUser) {
-                    const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
-                    await deleteDoc(postRef);
-                } else {
-                    posts = posts.filter(p => p.id !== postId);
-                    renderPosts();
+            if (isAdminActive) {
+                if (confirm("👑 [관리자 권한] 이 게시글을 원클릭 삭제하시겠습니까?")) {
+                    await executeDeletePost(postId);
                 }
-                showToast("게시글이 삭제되었습니다.");
+                return;
+            }
+
+            const inputName = prompt("게시글을 삭제하려면 작성자 이름(또는 관리자 이름)을 입력하세요:");
+
+            if (isAdminUser(inputName)) {
+                isAdminActive = true;
+                await executeDeletePost(postId);
+            } else if (post && inputName === post.author) {
+                await executeDeletePost(postId);
             } else if (inputName !== null) {
                 showToast("작성자 이름이 일치하지 않아요!");
             }
         };
 
-        // QR Code Generation
+        async function executeDeletePost(postId) {
+            if (currentUser) {
+                const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
+                await deleteDoc(postRef);
+            } else {
+                posts = posts.filter(p => p.id !== postId);
+                renderPosts();
+            }
+            showToast("게시글이 삭제되었습니다.");
+        }
+
+        window.deleteComment = async function(postId, commentIndex) {
+            const post = posts.find(p => p.id === postId);
+            if (!post || !post.comments) return;
+
+            const targetComment = post.comments[commentIndex];
+
+            if (isAdminActive) {
+                if (confirm("👑 [관리자 권한] 이 댓글을 원클릭 삭제하시겠습니까?")) {
+                    await executeDeleteComment(post, commentIndex);
+                }
+                return;
+            }
+
+            const inputName = prompt("댓글을 삭제하려면 작성자 이름(또는 관리자 이름)을 입력하세요:");
+            if (isAdminUser(inputName)) {
+                isAdminActive = true;
+                await executeDeleteComment(post, commentIndex);
+            } else if (targetComment && inputName === targetComment.author) {
+                await executeDeleteComment(post, commentIndex);
+            } else if (inputName !== null) {
+                showToast("작성자 이름이 일치하지 않아요!");
+            }
+        };
+
+        async function executeDeleteComment(post, commentIndex) {
+            const updatedComments = post.comments.filter((_, idx) => idx !== commentIndex);
+            if (currentUser) {
+                const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', post.id);
+                await updateDoc(postRef, { comments: updatedComments });
+            } else {
+                post.comments = updatedComments;
+                renderPosts();
+            }
+            showToast("댓글이 삭제되었습니다.");
+        }
+
+        // QR Code
         window.generateQRCode = function() {
             const qrcodeContainer = document.getElementById('qrcodeCanvas');
             qrcodeContainer.innerHTML = "";
@@ -486,7 +682,7 @@
             modal.classList.toggle('hidden');
         };
 
-        // Render Posts
+        // Render Functions
         function renderPosts() {
             const shortFeed = document.getElementById('shortFeed');
             const photoFeed = document.getElementById('photoFeed');
@@ -510,12 +706,13 @@
 
         function createShortPostHTML(post) {
             const comments = post.comments || [];
+            const isAdmin = isAdminUser(post.author);
             return `
                 <article class="crayon-box bg-white p-6 relative bg-gradient-to-br from-white to-amber-50">
                     <div class="flex justify-between items-start mb-3 border-b-2 border-dashed border-gray-200 pb-2">
                         <div class="flex items-center gap-2">
-                            <span class="bg-crayon-green px-3 py-1 rounded-full text-lg font-bold border-2 border-gray-800">
-                                👤 ${escapeHtml(post.author)}
+                            <span class="${isAdmin ? 'bg-crayon-purple' : 'bg-crayon-green'} px-3 py-1 rounded-full text-lg font-bold border-2 border-gray-800">
+                                ${isAdmin ? '👑' : '👤'} ${escapeHtml(post.author)}
                             </span>
                             <span class="text-gray-500 text-sm">${post.date}</span>
                         </div>
@@ -537,11 +734,14 @@
 
                     <div class="mt-4 pt-3 bg-gray-50 p-4 rounded-xl border-2 border-gray-200">
                         <div class="space-y-2 mb-3 max-h-40 overflow-y-auto">
-                            ${comments.map(c => `
-                                <div class="bg-white p-2 rounded-lg border border-gray-300 text-base">
-                                    <span class="font-bold text-blue-600">✍️ ${escapeHtml(c.author)}:</span> 
-                                    <span class="text-gray-800">${escapeHtml(c.text)}</span>
-                                    <span class="text-xs text-gray-400 ml-2">${c.date}</span>
+                            ${comments.map((c, idx) => `
+                                <div class="bg-white p-2 rounded-lg border border-gray-300 text-base flex justify-between items-center">
+                                    <div>
+                                        <span class="font-bold ${isAdminUser(c.author) ? 'text-purple-600' : 'text-blue-600'}">✍️ ${escapeHtml(c.author)}:</span> 
+                                        <span class="text-gray-800">${escapeHtml(c.text)}</span>
+                                        <span class="text-xs text-gray-400 ml-2">${c.date}</span>
+                                    </div>
+                                    <button onclick="deleteComment('${post.id}', ${idx})" class="text-xs text-gray-400 hover:text-red-500 font-bold ml-2">✕</button>
                                 </div>
                             `).join('')}
                         </div>
@@ -549,7 +749,7 @@
                         <form onsubmit="addComment(event, '${post.id}')" class="flex gap-2 flex-wrap sm:flex-nowrap">
                             <input type="text" placeholder="이름" required 
                                    class="comment-author crayon-input w-24 p-1.5 text-sm bg-white">
-                            <input type="text" placeholder="고운 말을 써봐요~" required 
+                            <input type="text" placeholder="댓글을 써봐요~" required 
                                    class="comment-text crayon-input flex-1 p-1.5 text-sm bg-white">
                             <button type="submit" class="crayon-btn bg-crayon-yellow hover:bg-yellow-300 px-3 py-1 text-base font-bold whitespace-nowrap">
                                 등록
@@ -562,11 +762,12 @@
 
         function createPhotoPostHTML(post) {
             const comments = post.comments || [];
+            const isAdmin = isAdminUser(post.author);
             return `
                 <article class="crayon-box bg-white p-5 flex flex-col justify-between">
                     <div>
                         <div class="flex justify-between items-center mb-3">
-                            <span class="bg-crayon-purple px-3 py-1 rounded-full text-base font-bold border-2 border-gray-800">
+                            <span class="${isAdmin ? 'bg-crayon-purple' : 'bg-crayon-green'} px-3 py-1 rounded-full text-base font-bold border-2 border-gray-800">
                                 📸 ${escapeHtml(post.author)}
                             </span>
                             <button onclick="deletePost('${post.id}')" class="text-gray-400 hover:text-red-500 text-xs font-bold">
@@ -594,10 +795,13 @@
 
                         <div class="pt-2 bg-gray-50 p-3 rounded-xl border-2 border-gray-200">
                             <div class="space-y-1.5 mb-2 max-h-32 overflow-y-auto">
-                                ${comments.map(c => `
-                                    <div class="bg-white p-1.5 rounded border border-gray-200 text-xs">
-                                        <span class="font-bold text-purple-600">${escapeHtml(c.author)}:</span> 
-                                        <span>${escapeHtml(c.text)}</span>
+                                ${comments.map((c, idx) => `
+                                    <div class="bg-white p-1.5 rounded border border-gray-200 text-xs flex justify-between items-center">
+                                        <div>
+                                            <span class="font-bold ${isAdminUser(c.author) ? 'text-purple-600' : 'text-blue-600'}">${escapeHtml(c.author)}:</span> 
+                                            <span>${escapeHtml(c.text)}</span>
+                                        </div>
+                                        <button onclick="deleteComment('${post.id}', ${idx})" class="text-xs text-gray-400 hover:text-red-500 font-bold ml-1">✕</button>
                                     </div>
                                 `).join('')}
                             </div>
@@ -633,7 +837,7 @@
                     <h3 class="text-2xl font-bold font-jua text-gray-800 mb-2">${title}</h3>
                     <p class="text-lg text-gray-800 mb-6 leading-snug">${message}</p>
                     <button onclick="this.closest('.fixed').remove()" class="crayon-btn w-full bg-white py-2 text-xl font-bold hover:bg-gray-100">
-                        네, 예쁘게 고쳐 쓸게요! 😇
+                        확인
                     </button>
                 </div>
             `;
