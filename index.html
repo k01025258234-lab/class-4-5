@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 4학년 5반 크레파스 자유게시판</title>
+    <!-- Web App / PWA Meta tags for Home Screen Icon -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="4-5 자유게시판">
+    <link rel="apple-touch-icon" href="https://api.iconify.design/twemoji:crayons.svg">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Jua&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Gaegu', 'cursive'],
+                        jua: ['Jua', 'sans-serif'],
+                    },
+                    colors: {
+                        crayon: {
+                            yellow: '#FFF4A3',
+                            pink: '#FFC8DD',
+                            blue: '#A2D2FF',
+                            green: '#CAFFBF',
+                            orange: '#FFD6A5',
+                            purple: '#E8AEFF',
+                            border: '#4A3E3D'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .crayon-box {
+            border: 3.5px solid #4A3E3D;
+            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+            box-shadow: 4px 5px 0px #4A3E3D;
+            transition: all 0.2s ease;
+        }
+        .crayon-box:hover {
+            transform: translateY(-2px) rotate(-0.5deg);
+        }
+        .crayon-btn {
+            border: 3px solid #4A3E3D;
+            border-radius: 20px 5px 20px 5px/5px 20px 5px 20px;
+            box-shadow: 3px 3px 0px #4A3E3D;
+            font-family: 'Jua', sans-serif;
+            transition: all 0.1s ease;
+        }
+        .crayon-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px #4A3E3D;
+        }
+        .crayon-input {
+            border: 3px solid #4A3E3D;
+            border-radius: 12px 255px 12px 255px/255px 12px 255px 12px;
+            outline: none;
+        }
+        .crayon-input:focus {
+            box-shadow: 0 0 0 3px #FFC8DD;
+        }
+        body {
+            background-color: #FAF6EF;
+            background-image: radial-gradient(#E5DDC8 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            font-family: 'Gaegu', cursive;
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-gray-800 pb-12">
+
+    <!-- 1. LOGIN MODAL -->
+    <div id="loginModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div class="crayon-box bg-white p-8 max-w-md w-full text-center relative bg-crayon-yellow">
+            <div class="text-5xl mb-3">🖍️</div>
+            <h1 class="text-3xl font-bold font-jua text-gray-800 mb-2">4학년 5반 자유게시판</h1>
+            <p class="text-gray-700 text-lg mb-6">게시판에 들어가려면 우리반 암호를 입력해줘!</p>
+            
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <input type="password" id="classPassword" placeholder="우리반 암호 4자리" 
+                           class="crayon-input w-full p-3 text-center text-2xl tracking-widest bg-white" required maxlength="4">
+                </div>
+                <div id="loginError" class="text-red-500 text-lg font-bold hidden">
+                    😅 암호가 틀렸어요! 다시 생각해봐~ (힌트: 0405)
+                </div>
+                <button type="submit" class="crayon-btn w-full bg-crayon-pink hover:bg-pink-300 py-3 text-xl font-bold text-gray-800">
+                    열려라 참깨! 입장하기 🚀
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. QR CODE MODAL -->
+    <div id="qrModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div class="crayon-box bg-white p-6 max-w-sm w-full text-center relative bg-crayon-blue">
+            <h3 class="text-2xl font-bold font-jua text-gray-800 mb-2">📲 우리반 QR코드 공유</h3>
+            <p class="text-base text-gray-700 mb-4">친구들에게 이 QR코드를 보여주거나<br>스마트폰 카메라로 찍어 바로 들어와요!</p>
+            
+            <div class="bg-white p-4 rounded-xl inline-block border-2 border-gray-800 mb-4">
+                <div id="qrcodeCanvas"></div>
+            </div>
+
+            <div class="text-xs text-gray-600 mb-4 bg-white/70 p-2 rounded border border-gray-400">
+                💡 팁: 브라우저 메뉴의 <b>'홈 화면에 추가'</b>를 누르면 진짜 앱처럼 아이콘이 생성되어 수시로 들러볼 수 있어요!
+            </div>
+
+            <button onclick="toggleQRModal()" class="crayon-btn w-full bg-crayon-yellow py-2 text-xl font-bold">
+                닫기
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div id="mainContent" class="hidden max-w-4xl mx-auto px-4 pt-6">
+
+        <!-- HEADER -->
+        <header class="crayon-box bg-crayon-yellow p-6 mb-6 text-center relative overflow-hidden">
+            <button onclick="toggleQRModal()" class="absolute top-3 right-3 crayon-btn bg-white hover:bg-gray-100 text-sm px-3 py-1 flex items-center gap-1">
+                📱 QR코드 공유
+            </button>
+
+            <div class="text-4xl mb-1">🎨</div>
+            <h1 class="text-4xl md:text-5xl font-jua text-gray-800 mb-2">
+                🌟 4학년 5반 시끌벅적 자유게시판 🌟
+            </h1>
+            <p class="text-xl text-gray-700">우리들의 예쁜 추억과 재미있는 이야기를 나눠요!</p>
+            
+            <div class="mt-4 flex flex-wrap justify-center gap-2 text-sm font-bold">
+                <span class="bg-white px-3 py-1 rounded-full border-2 border-gray-800">🔒 반 암호: 0405</span>
+                <span class="bg-white px-3 py-1 rounded-full border-2 border-gray-800">✍️ 실명 작성 필수</span>
+                <span class="bg-crayon-pink px-3 py-1 rounded-full border-2 border-gray-800 text-gray-800">🌸 욕설 자동 차단</span>
+            </div>
+        </header>
+
+        <!-- TAB NAVIGATION -->
+        <div class="flex justify-center gap-4 mb-6">
+            <button id="tabShortBtn" onclick="switchTab('short')" 
+                    class="crayon-btn bg-crayon-blue px-6 py-3 text-2xl font-bold flex items-center gap-2">
+                💬 짧은 글 수다방
+            </button>
+            <button id="tabPhotoBtn" onclick="switchTab('photo')" 
+                    class="crayon-btn bg-white opacity-60 hover:opacity-100 px-6 py-3 text-2xl font-bold flex items-center gap-2">
+                🖼️ 추억 사진관
+            </button>
+        </div>
+
+        <!-- WRITE POST BUTTON / FORM TOGGLE -->
+        <div class="mb-8">
+            <button onclick="toggleWriteForm()" class="crayon-btn w-full bg-crayon-green hover:bg-green-300 py-4 text-2xl font-bold flex items-center justify-center gap-2">
+                ✍️ 새 글 쓰기 (바른 고운 말을 사용해요!)
+            </button>
+
+            <!-- WRITE FORM -->
+            <div id="writeFormContainer" class="hidden crayon-box bg-white p-6 mt-4 relative">
+                <h3 class="text-2xl font-jua mb-4 border-b-2 border-dashed border-gray-400 pb-2">
+                    📝 <span id="formTitleText">짧은 글 작성하기</span>
+                </h3>
+                
+                <form id="postForm" onsubmit="handleCreatePost(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block font-bold text-gray-700 mb-1">내 이름 (실명) *</label>
+                            <input type="text" id="authorName" placeholder="예: 김민수" required 
+                                   class="crayon-input w-full p-2.5 bg-gray-50 text-lg">
+                        </div>
+                        <div id="photoUrlGroup" class="hidden">
+                            <label class="block font-bold text-gray-700 mb-1">사진 올리기 (선택)</label>
+                            <input type="file" id="photoFileInput" accept="image/*" onchange="handleImageUpload(event)"
+                                   class="crayon-input w-full p-1.5 bg-gray-50 text-base">
+                            <input type="hidden" id="photoDataUrl">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">내용 *</label>
+                        <textarea id="postContent" rows="3" placeholder="친구들에게 하고 싶은 말을 적어봐!" required
+                                  class="crayon-input w-full p-3 bg-gray-50 text-lg resize-none"></textarea>
+                    </div>
+
+                    <div class="flex justify-end gap-3">
+                        <button type="button" onclick="toggleWriteForm()" class="crayon-btn bg-gray-200 px-5 py-2 text-lg">
+                            취소
+                        </button>
+                        <button type="submit" class="crayon-btn bg-crayon-orange hover:bg-orange-300 px-6 py-2 text-xl font-bold">
+                            등록하기 🚀
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- POSTS FEED CONTAINER -->
+        <main>
+            <div id="shortFeed" class="space-y-6"></div>
+            <div id="photoFeed" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </main>
+    </div>
+
+    <!-- FIREBASE & CORE LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase Configuration (Uses Environment Config or Fallback)
+        const firebaseConfig = typeof __firebase_config !== 'undefined' 
+            ? JSON.parse(__firebase_config) 
+            : {
+                apiKey: "AIzaSyDummyKeyForPreviewModeOnly",
+                authDomain: "class-board.firebaseapp.com",
+                projectId: "class-board",
+                storageBucket: "class-board.appspot.com",
+                messagingSenderId: "123456789",
+                appId: "1:123456789:web:abc123def456"
+              };
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : '4th-grade-class-5';
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let posts = [];
+        let currentTab = 'short';
+
+        // -----------------------------------------------------------------
+        // PROFANITY FILTERING LIST
+        // -----------------------------------------------------------------
+        const BAD_WORDS_LIST = [
+            '바보', '멍청이', '지랄', '시발', '씨발', '씨벌', '씨바', '개새끼', '미친', '미친놈', '미친년',
+            '꺼져', '닥쳐', '병신', '떵개', '느금마', '느꺼니', '애자', '찐따', '쓰레기', '뒤져', '죽어라',
+            '새끼', '존나', '졸라', '개초딩', '좆', '싸가지', '돼지새끼', '씨X', 'ㅅㅂ', 'ㅂㅅ', 'ㅈㄴ'
+        ];
+
+        window.checkProfanity = function(text) {
+            if (!text) return { hasBadWord: false };
+            const normalizedText = text.replace(/\s+/g, '');
+            for (let word of BAD_WORDS_LIST) {
+                if (text.includes(word) || normalizedText.includes(word)) {
+                    return { hasBadWord: true, detectedWord: word };
+                }
+            }
+            return { hasBadWord: false };
+        };
+
+        // Auth Init
+        async function initAuth() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (err) {
+                console.log("Auth initialized in offline mode");
+            }
+        }
+        initAuth();
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                listenToPosts();
+            }
+        });
+
+        // Realtime Firestore Listener
+        function listenToPosts() {
+            if (!currentUser) return;
+            const postsCol = collection(db, 'artifacts', appId, 'public', 'data', 'posts');
+            
+            onSnapshot(postsCol, (snapshot) => {
+                posts = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                // Sort by timestamp desc
+                posts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                renderPosts();
+            }, (error) => {
+                console.error("Firestore listener error:", error);
+            });
+        }
+
+        // Global Handlers
+        window.handleLogin = function(e) {
+            e.preventDefault();
+            const passwordInput = document.getElementById('classPassword').value;
+            const errorMsg = document.getElementById('loginError');
+
+            if (passwordInput === '0405') {
+                document.getElementById('loginModal').classList.add('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+                renderPosts();
+                generateQRCode();
+            } else {
+                errorMsg.classList.remove('hidden');
+                document.getElementById('classPassword').value = '';
+            }
+        };
+
+        window.switchTab = function(tab) {
+            currentTab = tab;
+            const shortBtn = document.getElementById('tabShortBtn');
+            const photoBtn = document.getElementById('tabPhotoBtn');
+            const shortFeed = document.getElementById('shortFeed');
+            const photoFeed = document.getElementById('photoFeed');
+            const photoGroup = document.getElementById('photoUrlGroup');
+            const formTitle = document.getElementById('formTitleText');
+
+            if (tab === 'short') {
+                shortBtn.className = "crayon-btn bg-crayon-blue px-6 py-3 text-2xl font-bold flex items-center gap-2";
+                photoBtn.className = "crayon-btn bg-white opacity-60 hover:opacity-100 px-6 py-3 text-2xl font-bold flex items-center gap-2";
+                shortFeed.classList.remove('hidden');
+                photoFeed.classList.add('hidden');
+                photoGroup.classList.add('hidden');
+                formTitle.textContent = "짧은 글 작성하기";
+            } else {
+                photoBtn.className = "crayon-btn bg-crayon-purple px-6 py-3 text-2xl font-bold flex items-center gap-2";
+                shortBtn.className = "crayon-btn bg-white opacity-60 hover:opacity-100 px-6 py-3 text-2xl font-bold flex items-center gap-2";
+                photoFeed.classList.remove('hidden');
+                shortFeed.classList.add('hidden');
+                photoGroup.classList.remove('hidden');
+                formTitle.textContent = "추억 사진 올리기";
+            }
+            renderPosts();
+        };
+
+        window.toggleWriteForm = function() {
+            const form = document.getElementById('writeFormContainer');
+            form.classList.toggle('hidden');
+        };
+
+        window.handleImageUpload = function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('photoDataUrl').value = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        window.handleCreatePost = async function(e) {
+            e.preventDefault();
+            const author = document.getElementById('authorName').value.trim();
+            const content = document.getElementById('postContent').value.trim();
+            const photoDataUrl = document.getElementById('photoDataUrl').value;
+
+            if (!author || !content) return;
+
+            if (checkProfanity(author).hasBadWord || checkProfanity(content).hasBadWord) {
+                showWarningAlert("🌸 예쁜 말을 사용해요!", "게시글에 안 좋은 말이 들어있어 올릴 수 없어요. 고운 말로 바꿔 써볼까요?");
+                return;
+            }
+
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}. ${String(today.getMonth() + 1).padStart(2, '0')}. ${String(today.getDate()).padStart(2, '0')}`;
+
+            const newPost = {
+                type: currentTab,
+                author: author,
+                content: content,
+                imageUrl: currentTab === 'photo' ? (photoDataUrl || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=600&q=80') : null,
+                likes: 0,
+                date: dateStr,
+                createdAt: Date.now(),
+                comments: []
+            };
+
+            if (currentUser) {
+                const postsCol = collection(db, 'artifacts', appId, 'public', 'data', 'posts');
+                await addDoc(postsCol, newPost);
+            } else {
+                posts.unshift({ id: Date.now().toString(), ...newPost });
+                renderPosts();
+            }
+
+            document.getElementById('postForm').reset();
+            document.getElementById('photoDataUrl').value = '';
+            toggleWriteForm();
+            showToast("멋진 글이 등록되었어요! ✨");
+        };
+
+        window.likePost = async function(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+
+            const updatedLikes = (post.likes || 0) + 1;
+            if (currentUser) {
+                const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
+                await updateDoc(postRef, { likes: updatedLikes });
+            } else {
+                post.likes = updatedLikes;
+                renderPosts();
+            }
+        };
+
+        window.addComment = async function(e, postId) {
+            e.preventDefault();
+            const nameInput = e.target.querySelector('.comment-author');
+            const textInput = e.target.querySelector('.comment-text');
+
+            const author = nameInput.value.trim();
+            const text = textInput.value.trim();
+
+            if (!author || !text) return;
+
+            if (checkProfanity(author).hasBadWord || checkProfanity(text).hasBadWord) {
+                showWarningAlert("🌸 고운 말을 사용해요!", "댓글에 나쁜 말이 들어있어 등록할 수 없어요.");
+                return;
+            }
+
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}. ${String(today.getMonth() + 1).padStart(2, '0')}. ${String(today.getDate()).padStart(2, '0')}`;
+            
+            const updatedComments = [
+                ...(post.comments || []),
+                { id: Date.now(), author: author, text: text, date: dateStr }
+            ];
+
+            if (currentUser) {
+                const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
+                await updateDoc(postRef, { comments: updatedComments });
+            } else {
+                post.comments = updatedComments;
+                renderPosts();
+            }
+
+            textInput.value = '';
+            showToast("댓글이 추가되었습니다! 💬");
+        };
+
+        window.deletePost = async function(postId) {
+            const inputName = prompt("게시글을 삭제하려면 작성자 이름을 입력하세요:");
+            const post = posts.find(p => p.id === postId);
+
+            if (post && inputName === post.author) {
+                if (currentUser) {
+                    const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
+                    await deleteDoc(postRef);
+                } else {
+                    posts = posts.filter(p => p.id !== postId);
+                    renderPosts();
+                }
+                showToast("게시글이 삭제되었습니다.");
+            } else if (inputName !== null) {
+                showToast("작성자 이름이 일치하지 않아요!");
+            }
+        };
+
+        // QR Code Generation
+        window.generateQRCode = function() {
+            const qrcodeContainer = document.getElementById('qrcodeCanvas');
+            qrcodeContainer.innerHTML = "";
+            new QRCode(qrcodeContainer, {
+                text: window.location.href,
+                width: 160,
+                height: 160,
+                colorDark : "#4A3E3D",
+                colorLight : "#ffffff"
+            });
+        };
+
+        window.toggleQRModal = function() {
+            const modal = document.getElementById('qrModal');
+            modal.classList.toggle('hidden');
+        };
+
+        // Render Posts
+        function renderPosts() {
+            const shortFeed = document.getElementById('shortFeed');
+            const photoFeed = document.getElementById('photoFeed');
+
+            const filteredPosts = posts.filter(p => p.type === currentTab);
+
+            if (currentTab === 'short') {
+                if (filteredPosts.length === 0) {
+                    shortFeed.innerHTML = `<div class="text-center py-12 text-2xl text-gray-500">아직 작성된 글이 없어요. 첫 번째 주인공이 되어보세요! ✏️</div>`;
+                    return;
+                }
+                shortFeed.innerHTML = filteredPosts.map(post => createShortPostHTML(post)).join('');
+            } else {
+                if (filteredPosts.length === 0) {
+                    photoFeed.innerHTML = `<div class="col-span-full text-center py-12 text-2xl text-gray-500">아직 등록된 사진이 없어요. 예쁜 추억을 공유해줘요! 🖼️</div>`;
+                    return;
+                }
+                photoFeed.innerHTML = filteredPosts.map(post => createPhotoPostHTML(post)).join('');
+            }
+        }
+
+        function createShortPostHTML(post) {
+            const comments = post.comments || [];
+            return `
+                <article class="crayon-box bg-white p-6 relative bg-gradient-to-br from-white to-amber-50">
+                    <div class="flex justify-between items-start mb-3 border-b-2 border-dashed border-gray-200 pb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-crayon-green px-3 py-1 rounded-full text-lg font-bold border-2 border-gray-800">
+                                👤 ${escapeHtml(post.author)}
+                            </span>
+                            <span class="text-gray-500 text-sm">${post.date}</span>
+                        </div>
+                        <button onclick="deletePost('${post.id}')" class="text-gray-400 hover:text-red-500 text-sm font-bold">
+                            ✕ 삭제
+                        </button>
+                    </div>
+
+                    <p class="text-2xl leading-relaxed my-4 text-gray-800 font-medium whitespace-pre-line">
+                        ${escapeHtml(post.content)}
+                    </p>
+
+                    <div class="flex justify-between items-center mt-4 pt-2 border-t border-gray-100">
+                        <button onclick="likePost('${post.id}')" class="crayon-btn bg-crayon-pink hover:bg-pink-300 px-4 py-1.5 text-lg font-bold flex items-center gap-1">
+                            ❤️ 좋아요 <span>${post.likes || 0}</span>
+                        </button>
+                        <span class="text-gray-600 font-bold">💬 댓글 ${comments.length}개</span>
+                    </div>
+
+                    <div class="mt-4 pt-3 bg-gray-50 p-4 rounded-xl border-2 border-gray-200">
+                        <div class="space-y-2 mb-3 max-h-40 overflow-y-auto">
+                            ${comments.map(c => `
+                                <div class="bg-white p-2 rounded-lg border border-gray-300 text-base">
+                                    <span class="font-bold text-blue-600">✍️ ${escapeHtml(c.author)}:</span> 
+                                    <span class="text-gray-800">${escapeHtml(c.text)}</span>
+                                    <span class="text-xs text-gray-400 ml-2">${c.date}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <form onsubmit="addComment(event, '${post.id}')" class="flex gap-2 flex-wrap sm:flex-nowrap">
+                            <input type="text" placeholder="이름" required 
+                                   class="comment-author crayon-input w-24 p-1.5 text-sm bg-white">
+                            <input type="text" placeholder="고운 말을 써봐요~" required 
+                                   class="comment-text crayon-input flex-1 p-1.5 text-sm bg-white">
+                            <button type="submit" class="crayon-btn bg-crayon-yellow hover:bg-yellow-300 px-3 py-1 text-base font-bold whitespace-nowrap">
+                                등록
+                            </button>
+                        </form>
+                    </div>
+                </article>
+            `;
+        }
+
+        function createPhotoPostHTML(post) {
+            const comments = post.comments || [];
+            return `
+                <article class="crayon-box bg-white p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="bg-crayon-purple px-3 py-1 rounded-full text-base font-bold border-2 border-gray-800">
+                                📸 ${escapeHtml(post.author)}
+                            </span>
+                            <button onclick="deletePost('${post.id}')" class="text-gray-400 hover:text-red-500 text-xs font-bold">
+                                ✕ 삭제
+                            </button>
+                        </div>
+
+                        <div class="crayon-box overflow-hidden mb-3 bg-gray-100 max-h-64 flex items-center justify-center">
+                            <img src="${post.imageUrl}" alt="추억 사진" class="w-full h-48 object-cover hover:scale-105 transition duration-300"
+                                 onerror="this.src='https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=600&q=80'">
+                        </div>
+
+                        <p class="text-xl mb-3 text-gray-800 font-medium whitespace-pre-line">
+                            ${escapeHtml(post.content)}
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <button onclick="likePost('${post.id}')" class="crayon-btn bg-crayon-pink hover:bg-pink-300 px-3 py-1 text-base font-bold flex items-center gap-1">
+                                ❤️ 좋아요 <span>${post.likes || 0}</span>
+                            </button>
+                            <span class="text-xs text-gray-400">${post.date}</span>
+                        </div>
+
+                        <div class="pt-2 bg-gray-50 p-3 rounded-xl border-2 border-gray-200">
+                            <div class="space-y-1.5 mb-2 max-h-32 overflow-y-auto">
+                                ${comments.map(c => `
+                                    <div class="bg-white p-1.5 rounded border border-gray-200 text-xs">
+                                        <span class="font-bold text-purple-600">${escapeHtml(c.author)}:</span> 
+                                        <span>${escapeHtml(c.text)}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            <form onsubmit="addComment(event, '${post.id}')" class="flex gap-1.5">
+                                <input type="text" placeholder="이름" required 
+                                       class="comment-author crayon-input w-16 p-1 text-xs bg-white">
+                                <input type="text" placeholder="댓글..." required 
+                                       class="comment-text crayon-input flex-1 p-1 text-xs bg-white">
+                                <button type="submit" class="crayon-btn bg-crayon-yellow hover:bg-yellow-300 px-2 py-1 text-xs font-bold">
+                                    달기
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showWarningAlert(title, message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = "fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4";
+            alertDiv.innerHTML = `
+                <div class="crayon-box bg-white p-6 max-w-sm w-full text-center bg-crayon-pink">
+                    <div class="text-5xl mb-2">🛑</div>
+                    <h3 class="text-2xl font-bold font-jua text-gray-800 mb-2">${title}</h3>
+                    <p class="text-lg text-gray-800 mb-6 leading-snug">${message}</p>
+                    <button onclick="this.closest('.fixed').remove()" class="crayon-btn w-full bg-white py-2 text-xl font-bold hover:bg-gray-100">
+                        네, 예쁘게 고쳐 쓸게요! 😇
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(alertDiv);
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = "fixed bottom-5 right-5 crayon-btn bg-gray-800 text-white px-6 py-3 rounded-full text-lg z-50 animate-bounce";
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+    </script>
+</body>
+</html>
