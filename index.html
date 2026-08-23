@@ -3,854 +3,637 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎨 4학년 5반 추억보관소</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="4-5 추억보관소">
-    <link rel="apple-touch-icon" href="https://api.iconify.design/twemoji:crayons.svg">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Jua&display=swap" rel="stylesheet">
-    
+    <title>4학년 5반 실시간 소통 공간</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Gaegu', 'cursive'],
-                        jua: ['Jua', 'sans-serif'],
-                    },
-                    colors: {
-                        crayon: {
-                            yellow: '#FFF4A3',
-                            pink: '#FFC8DD',
-                            blue: '#A2D2FF',
-                            green: '#CAFFBF',
-                            orange: '#FFD6A5',
-                            purple: '#E8AEFF',
-                            border: '#4A3E3D'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        .crayon-box {
-            border: 3.5px solid #4A3E3D;
-            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
-            box-shadow: 4px 5px 0px #4A3E3D;
-            transition: all 0.2s ease;
-        }
-        .crayon-box:hover {
-            transform: translateY(-2px) rotate(-0.5deg);
-        }
-        .crayon-btn {
-            border: 3px solid #4A3E3D;
-            border-radius: 20px 5px 20px 5px/5px 20px 5px 20px;
-            box-shadow: 3px 3px 0px #4A3E3D;
-            font-family: 'Jua', sans-serif;
-            transition: all 0.1s ease;
-        }
-        .crayon-btn:active {
-            transform: translate(2px, 2px);
-            box-shadow: 1px 1px 0px #4A3E3D;
-        }
-        .crayon-input {
-            border: 3px solid #4A3E3D;
-            border-radius: 12px 255px 12px 255px/255px 12px 255px 12px;
-            outline: none;
-        }
-        .crayon-input:focus {
-            box-shadow: 0 0 0 3px #FFC8DD;
-        }
         body {
-            background-color: #FAF6EF;
-            background-image: radial-gradient(#E5DDC8 1.5px, transparent 1.5px);
-            background-size: 24px 24px;
-            font-family: 'Gaegu', cursive;
-            font-size: 1.25rem;
-            transition: background-color 0.3s ease;
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8fafc;
+        }
+        .title-font {
+            font-family: 'Jua', sans-serif;
+        }
+        .polaroid {
+            background: #ffffff;
+            padding: 1rem 1rem 2rem 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transform: rotate(-1deg);
+            transition: transform 0.2s;
+        }
+        .polaroid:nth-child(even) {
+            transform: rotate(1deg);
+        }
+        .polaroid:hover {
+            transform: scale(1.02) rotate(0deg);
+        }
+        .washi-tape {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 22px;
+            background: rgba(253, 224, 71, 0.8);
+            border: 1px dashed #ca8a04;
         }
     </style>
 </head>
-<body id="appBody" class="min-h-screen text-gray-800 pb-12">
+<body class="min-h-screen text-slate-800 pb-12">
 
-    <div id="loginModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div class="crayon-box bg-white p-8 max-w-md w-full text-center relative bg-crayon-yellow">
-            <div class="text-5xl mb-3">🖍️</div>
-            <h1 class="text-3xl font-bold font-jua text-gray-800 mb-2">4학년 5반 추억보관소</h1>
-            <p class="text-gray-700 text-lg mb-6">게시판에 들어가려면 우리반 암호를 입력해줘!</p>
+    <!-- Passcode Lock Screen -->
+    <div id="lockScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full text-center border-4 border-indigo-500">
+            <div class="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl animate-bounce">
+                🏫
+            </div>
+            <h1 class="title-font text-3xl text-indigo-900 mb-2">4학년 5반 소통 공간</h1>
+            <p class="text-gray-600 mb-6 font-bold">반 친구들만 입장할 수 있어요!<br>입장 번호(비밀번호 4자리)를 입력해주세요.</p>
             
-            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+            <form onsubmit="handleUnlock(event)" class="space-y-4">
                 <div>
-                    <input type="password" id="classPassword" placeholder="우리반 암호 4자리" 
-                           class="crayon-input w-full p-3 text-center text-2xl tracking-widest bg-white" required maxlength="4">
+                    <input type="password" id="passcodeInput" placeholder="입장 번호 4자리" maxlength="6" 
+                        class="w-full px-4 py-3 text-center text-2xl tracking-widest border-2 border-indigo-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-indigo-50/50" required>
                 </div>
-                <div id="loginError" class="text-red-500 text-lg font-bold hidden">
-                    😅 암호가 틀렸어요! 다시 생각해봐~ (힌트: 0405)
-                </div>
-                <button type="submit" class="crayon-btn w-full bg-crayon-pink hover:bg-pink-300 py-3 text-xl font-bold text-gray-800">
-                    열려라 참깨! 입장하기 🚀
+                <button type="submit" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xl rounded-2xl transition-all shadow-lg cursor-pointer">
+                    🚀 입장하기
                 </button>
             </form>
+            <p id="lockError" class="text-rose-500 text-sm mt-3 font-bold hidden">비밀번호는 4자리 이상 입력해 주세요!</p>
         </div>
     </div>
 
-    <div id="qrModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div class="crayon-box bg-white p-6 max-w-sm w-full text-center relative bg-crayon-blue">
-            <h3 class="text-2xl font-bold font-jua text-gray-800 mb-2">📲 우리반 QR코드 공유</h3>
-            <p class="text-base text-gray-700 mb-4">친구들에게 이 QR코드를 보여주거나<br>스마트폰 카메라로 찍어 바로 들어와요!</p>
-            
-            <div class="bg-white p-4 rounded-xl inline-block border-2 border-gray-800 mb-4">
-                <div id="qrcodeCanvas"></div>
-            </div>
-
-            <button onclick="toggleQRModal()" class="crayon-btn w-full bg-crayon-yellow py-2 text-xl font-bold">
-                닫기
-            </button>
-        </div>
-    </div>
-
-    <div id="mainContent" class="hidden max-w-4xl mx-auto px-4 pt-6">
-
-        <header class="crayon-box bg-crayon-yellow p-6 mb-6 text-center relative overflow-hidden">
-            <button onclick="toggleQRModal()" class="absolute top-3 right-3 crayon-btn bg-white hover:bg-gray-100 text-sm px-3 py-1 flex items-center gap-1">
-                📱 QR코드 공유
-            </button>
-
-            <div class="text-4xl mb-1">🎨</div>
-            <h1 class="text-4xl md:text-5xl font-jua text-gray-800 mb-2">
-                🌟 4학년 5반 추억보관소 🌟
-            </h1>
-            <p class="text-xl text-gray-700">우리들의 예쁜 추억과 재미있는 이야기를 나눠요!</p>
-            
-            <div class="mt-4 flex flex-wrap justify-center gap-2 text-sm font-bold">
-                <span class="bg-white px-3 py-1 rounded-full border-2 border-gray-800">🔒 반 암호: 0405</span>
-                <span class="bg-white px-3 py-1 rounded-full border-2 border-gray-800">🏫 4-5반 명단 전용</span>
-                <span class="bg-crayon-pink px-3 py-1 rounded-full border-2 border-gray-800 text-gray-800">🌸 욕설 자동 차단</span>
-                <button onclick="toggleAdminPanel()" class="bg-crayon-purple px-3 py-1 rounded-full border-2 border-gray-800 text-gray-800 hover:bg-purple-300">
-                    👑 관리자 도구 (노은율 전용)
-                </button>
+    <!-- Main Application -->
+    <div id="appContainer" class="hidden max-w-5xl mx-auto px-4 py-6">
+        
+        <!-- Header Banner -->
+        <header class="bg-gradient-to-r from-indigo-600 to-blue-600 p-6 sm:p-8 rounded-3xl shadow-xl text-white mb-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+                <div class="flex items-center gap-3">
+                    <span class="text-5xl">🎒</span>
+                    <div>
+                        <h1 class="title-font text-4xl sm:text-5xl text-yellow-300 drop-shadow-md">4학년 5반 소통방</h1>
+                        <p class="text-base sm:text-lg text-indigo-100 font-bold">친구들과 자유롭게 글과 사진을 나누는 공간이에요!</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="openNewPostModal()" class="px-6 py-3.5 bg-yellow-400 hover:bg-yellow-300 active:scale-95 text-slate-900 font-bold text-xl rounded-2xl transition-all flex items-center gap-2 shadow-lg cursor-pointer">
+                        <span>✏️</span> 새 글 쓰기
+                    </button>
+                    <button type="button" onclick="lockApp()" class="px-3.5 py-3.5 bg-indigo-800/80 hover:bg-indigo-700 text-white rounded-2xl font-bold text-sm cursor-pointer" title="잠금">
+                        🔒
+                    </button>
+                </div>
             </div>
         </header>
 
-        <div id="adminPanel" class="hidden crayon-box bg-crayon-purple p-6 mb-6 space-y-4">
-            <div class="flex justify-between items-center border-b-2 border-gray-800 pb-2">
-                <h3 class="text-2xl font-jua text-gray-800">👑 관리자 대시보드 (최고 관리자: 노은율)</h3>
-                <span class="text-sm bg-white px-2 py-0.5 rounded border border-gray-800">Master Admin</span>
-            </div>
-
-            <div class="bg-white/60 p-3 rounded-xl border-2 border-gray-800">
-                <label class="block font-bold text-gray-800 mb-1">👑 관리자 명단 관리 (추가 및 지정):</label>
-                <div class="flex gap-2 mb-2">
-                    <input type="text" id="newAdminInput" placeholder="관리자로 지정할 이름" class="crayon-input p-1.5 text-base bg-white w-48">
-                    <button onclick="addAdmin()" class="crayon-btn bg-crayon-yellow px-3 py-1 text-base font-bold">
-                        ⭐ 관리자 추가
-                    </button>
-                </div>
-                <div id="adminList" class="flex flex-wrap gap-2">
-                    </div>
-            </div>
-
-            <div>
-                <label class="block font-bold text-gray-800 mb-2">🎨 게시판 배경 테마 변경:</label>
-                <div class="flex gap-2 flex-wrap">
-                    <button onclick="changeBackground('#FAF6EF')" class="crayon-btn bg-[#FAF6EF] px-3 py-1 text-sm font-bold">아이보리</button>
-                    <button onclick="changeBackground('#FFE5EC')" class="crayon-btn bg-[#FFE5EC] px-3 py-1 text-sm font-bold">파스텔 핑크</button>
-                    <button onclick="changeBackground('#E8F5E9')" class="crayon-btn bg-[#E8F5E9] px-3 py-1 text-sm font-bold">민트 그린</button>
-                    <button onclick="changeBackground('#F3E5F5')" class="crayon-btn bg-[#F3E5F5] px-3 py-1 text-sm font-bold">라벤더 퍼플</button>
-                    <button onclick="changeBackground('#E3F2FD')" class="crayon-btn bg-[#E3F2FD] px-3 py-1 text-sm font-bold">하늘색</button>
-                </div>
-            </div>
-
-            <div>
-                <label class="block font-bold text-gray-800 mb-2">👥 우리반 학생 명단 관리 (초대 및 방출):</label>
-                <div class="flex gap-2 mb-3">
-                    <input type="text" id="newMemberInput" placeholder="추가할 학생 이름" class="crayon-input p-2 text-base bg-white w-48">
-                    <button onclick="addMember()" class="crayon-btn bg-crayon-green px-4 py-1 text-base font-bold">
-                        ➕ 초대 (추가)
-                    </button>
-                </div>
-                
-                <div id="rosterList" class="flex flex-wrap gap-2 max-h-36 overflow-y-auto bg-white p-3 rounded-xl border-2 border-gray-800">
-                    </div>
-            </div>
-        </div>
-
-        <div class="flex justify-center gap-4 mb-6">
-            <button id="tabShortBtn" onclick="switchTab('short')" 
-                    class="crayon-btn bg-crayon-blue px-6 py-3 text-2xl font-bold flex items-center gap-2">
-                💬 짧은 글 수다방
+        <!-- Navigation Tabs -->
+        <div class="flex gap-3 mb-6 bg-white p-3 rounded-2xl shadow-md border border-slate-100">
+            <button type="button" id="tabFreeBoardBtn" onclick="switchTab('free')" class="flex-1 px-4 py-3 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 bg-indigo-600 text-white shadow cursor-pointer">
+                💬 반 친구 수다방 (<span id="freePostCount">0</span>)
             </button>
-            <button id="tabPhotoBtn" onclick="switchTab('photo')" 
-                    class="crayon-btn bg-white opacity-60 hover:opacity-100 px-6 py-3 text-2xl font-bold flex items-center gap-2">
-                🖼️ 추억 사진관
+            <button type="button" id="tabPhotoGalleryBtn" onclick="switchTab('photo')" class="flex-1 px-4 py-3 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-100 cursor-pointer">
+                📸 추억 사진방 (<span id="photoPostCount">0</span>)
             </button>
         </div>
 
-        <div class="mb-8">
-            <button onclick="toggleWriteForm()" class="crayon-btn w-full bg-crayon-green hover:bg-green-300 py-4 text-2xl font-bold flex items-center justify-center gap-2">
-                ✍️ 새 글 쓰기 (우리반 실명 필수!)
-            </button>
-
-            <div id="writeFormContainer" class="hidden crayon-box bg-white p-6 mt-4 relative">
-                <h3 class="text-2xl font-jua mb-4 border-b-2 border-dashed border-gray-400 pb-2">
-                    📝 <span id="formTitleText">짧은 글 작성하기</span>
-                </h3>
-                
-                <form id="postForm" onsubmit="handleCreatePost(event)" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block font-bold text-gray-700 mb-1">내 이름 (우리반 실명만 가능) *</label>
-                            <input type="text" id="authorName" placeholder="예: 노은율" required 
-                                   class="crayon-input w-full p-2.5 bg-gray-50 text-lg">
-                        </div>
-                        <div id="photoUrlGroup" class="hidden">
-                            <label class="block font-bold text-gray-700 mb-1">사진 올리기 (선택)</label>
-                            <input type="file" id="photoFileInput" accept="image/*" onchange="handleImageUpload(event)"
-                                   class="crayon-input w-full p-1.5 bg-gray-50 text-base">
-                            <input type="hidden" id="photoDataUrl">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block font-bold text-gray-700 mb-1">내용 *</label>
-                        <textarea id="postContent" rows="3" placeholder="친구들에게 하고 싶은 말을 적어봐!" required
-                                  class="crayon-input w-full p-3 bg-gray-50 text-lg resize-none"></textarea>
-                    </div>
-
-                    <div class="flex justify-end gap-3">
-                        <button type="button" onclick="toggleWriteForm()" class="crayon-btn bg-gray-200 px-5 py-2 text-lg">
-                            취소
-                        </button>
-                        <button type="submit" class="crayon-btn bg-crayon-orange hover:bg-orange-300 px-6 py-2 text-xl font-bold">
-                            등록하기 🚀
-                        </button>
-                    </div>
-                </form>
+        <!-- TAB 1: Free Board -->
+        <section id="sectionFreeBoard" class="space-y-6">
+            <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row gap-3 items-center justify-between">
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <span class="text-xl">🔍</span>
+                    <input type="text" id="freeSearchInput" oninput="filterFreePosts()" placeholder="내용 또는 이름 검색..." class="w-full sm:w-64 px-4 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm bg-slate-50">
+                </div>
+                <div class="text-sm font-bold text-indigo-700 text-center sm:text-right">
+                    ✨ 친구들에게 상처 주는 말은 절대 안돼요! 바른 말을 사용합시다 😊
+                </div>
             </div>
-        </div>
 
-        <main>
-            <div id="shortFeed" class="space-y-6"></div>
-            <div id="photoFeed" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6"></div>
-        </main>
+            <div id="freePostsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+        </section>
+
+        <!-- TAB 2: Photo Gallery -->
+        <section id="sectionPhotoGallery" class="space-y-6 hidden">
+            <div class="bg-indigo-50 p-5 rounded-2xl border-2 border-indigo-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                    <h2 class="title-font text-2xl text-indigo-900">📸 4학년 5반 추억 사진방</h2>
+                    <p class="text-sm text-indigo-700 font-bold">학교생활, 현장체험학습 등 멋진 순간을 사진으로 공유해봐요!</p>
+                </div>
+                <button type="button" onclick="openNewPostModal()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow cursor-pointer">사진 올리기</button>
+            </div>
+
+            <div id="photoGridContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+        </section>
+
     </div>
 
+    <!-- New Post Modal -->
+    <div id="postModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 hidden">
+        <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] flex flex-col border-4 border-indigo-500">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                <h3 id="modalTitle" class="title-font text-2xl text-indigo-900 flex items-center gap-2"><span>✏️</span> 새 글 작성하기</h3>
+                <button type="button" onclick="closeNewPostModal()" class="text-gray-400 hover:text-gray-600 text-3xl font-bold leading-none cursor-pointer">&times;</button>
+            </div>
+
+            <form id="postForm" onsubmit="handlePostSubmit(event)" class="overflow-y-auto flex-1 py-4 space-y-4 pr-1">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">게시판 선택</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="flex items-center justify-center gap-1 p-2.5 bg-indigo-50 rounded-xl border-2 border-indigo-200 cursor-pointer text-sm font-bold text-indigo-900">
+                            <input type="radio" name="postType" value="free" checked onchange="toggleFormMode(this.value)"> 수다방 글쓰기
+                        </label>
+                        <label class="flex items-center justify-center gap-1 p-2.5 bg-amber-50 rounded-xl border-2 border-amber-200 cursor-pointer text-sm font-bold text-amber-900">
+                            <input type="radio" name="postType" value="photo" onchange="toggleFormMode(this.value)"> 사진방 사진 올리기
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">작성자 이름</label>
+                        <input type="text" id="postAuthor" placeholder="예: 김철수" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-xl bg-slate-50" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">이모지 선택</label>
+                        <select id="postSticker" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-xl bg-slate-50 font-bold">
+                            <option value="😊">😊 웃음</option>
+                            <option value="🎒">🎒 학교</option>
+                            <option value="⚽">⚽ 축구</option>
+                            <option value="⭐">⭐ 별</option>
+                            <option value="🎨">🎨 미술</option>
+                            <option value="🍕">🍕 피자</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">제목</label>
+                    <input type="text" id="postTitle" placeholder="제목을 입력하세요..." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-xl bg-slate-50" required>
+                </div>
+
+                <div id="photoUploadGroup" class="hidden space-y-2">
+                    <label class="block text-sm font-bold text-amber-900">📷 사진 첨부 (휴대폰/PC 사진 선택)</label>
+                    <input type="file" id="postImageFile" accept="image/*" onchange="handleImageFileSelect(event)" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer">
+                    <div id="imagePreviewContainer" class="hidden mt-2">
+                        <img id="imagePreview" src="" alt="미리보기" class="w-full h-44 object-cover rounded-xl border-2 border-amber-300">
+                    </div>
+                </div>
+
+                <div>
+                    <label id="contentLabel" class="block text-sm font-bold text-slate-700 mb-1">내용</label>
+                    <textarea id="postContent" rows="4" placeholder="내용을 자유롭게 적어보세요..." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-xl bg-slate-50" required></textarea>
+                </div>
+            </form>
+
+            <div class="pt-3 border-t border-slate-200">
+                <button type="button" onclick="document.getElementById('postForm').requestSubmit()" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xl rounded-2xl transition-all shadow-lg cursor-pointer">
+                    ✨ 등록하기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Lightbox Modal -->
+    <div id="photoModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 hidden">
+        <div class="bg-white p-6 rounded-3xl max-w-2xl w-full relative shadow-2xl">
+            <button type="button" onclick="closePhotoModal()" class="absolute top-3 right-4 text-gray-500 hover:text-black text-3xl font-bold cursor-pointer">&times;</button>
+            <div class="overflow-hidden rounded-2xl bg-black mb-4 max-h-[60vh] flex items-center justify-center">
+                <img id="lightboxImg" src="" alt="확대 사진" class="max-h-[60vh] object-contain">
+            </div>
+            <h3 id="lightboxTitle" class="title-font text-2xl text-slate-900 mb-1"></h3>
+            <p id="lightboxCaption" class="text-slate-700 text-sm mb-3"></p>
+            <div class="flex items-center justify-between text-xs text-slate-500 border-t pt-2 font-bold">
+                <span id="lightboxAuthor"></span>
+                <span id="lightboxDate"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Warning Modal -->
+    <div id="warningModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 hidden">
+        <div class="bg-white p-6 rounded-3xl max-w-sm w-full text-center space-y-4 shadow-xl">
+            <div id="warningIcon" class="text-5xl">⚠️</div>
+            <h3 id="warningTitle" class="title-font text-2xl text-indigo-900">알림</h3>
+            <p id="warningText" class="text-slate-700 text-sm font-bold leading-relaxed"></p>
+            <button type="button" onclick="closeWarningModal()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base rounded-2xl cursor-pointer">확인</button>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs & App Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            doc, 
+            updateDoc, 
+            deleteDoc, 
+            onSnapshot, 
+            query, 
+            orderBy 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const firebaseConfig = typeof __firebase_config !== 'undefined' 
-            ? JSON.parse(__firebase_config) 
-            : {
-                apiKey: "AIzaSyDummyKeyForPreviewModeOnly",
-                authDomain: "class-board.firebaseapp.com",
-                projectId: "class-board",
-                storageBucket: "class-board.appspot.com",
-                messagingSenderId: "123456789",
-                appId: "1:123456789:web:abc123def456"
-              };
+        // 사용자 고유 Firebase 프로젝트 설정 (class4-5)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAVh9Dr8Zs6mHY_y3Jk00n-dgUC8HaUFqM",
+            authDomain: "class4-5.firebaseapp.com",
+            projectId: "class4-5",
+            storageBucket: "class4-5.firebasestorage.app",
+            messagingSenderId: "514544004464",
+            appId: "1:514544004464:web:06bd24648055caab04f3b5",
+            measurementId: "G-YQE8YK6RNF"
+        };
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : '4th-grade-class-5';
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getFirestore(app);
+        const postsColRef = collection(db, "school_posts");
 
-        let currentUser = null;
+        const BAD_WORDS = ['욕설', '바보', '시발', '개새', '지랄', '병신', '꺼져', '닥쳐', '쓰레기', '죽어'];
+
         let posts = [];
-        let currentTab = 'short';
-        let isAdminActive = false;
+        let activeTab = 'free';
+        let currentPhotoData = '';
 
-        // -----------------------------------------------------------------
-        // 관리자 명단 (최고 관리자: 노은율)
-        // -----------------------------------------------------------------
-        let ADMIN_MEMBERS = ['노은율'];
+        window.showWarningModal = function(title, text, icon = '⚠️') {
+            document.getElementById('warningTitle').innerText = title;
+            document.getElementById('warningText').innerHTML = text;
+            document.getElementById('warningIcon').innerText = icon;
+            document.getElementById('warningModal').classList.remove('hidden');
+        }
 
-        // -----------------------------------------------------------------
-        // 4학년 5반 허용 명단 (선생님 + 학생)
-        // -----------------------------------------------------------------
-        let ALLOWED_MEMBERS = [
-            '전영주선생님', '전영주',
-            '강민정', '고은혁', '김민규', '김보윤', '김영훈', '김윤슬', '노은율', 
-            '문장우', '박리원', '서태희', '오도현', '우주하', '이다연', '이서준', 
-            '이소율', '이채은', '임세준', '조규원', '조하린', '차수연', '최유주', 
-            '한찬희', '구재이', '조승우', '조민준'
-        ];
+        window.closeWarningModal = function() {
+            document.getElementById('warningModal').classList.add('hidden');
+        }
 
-        window.isMemberAllowed = function(name) {
-            if (!name) return false;
-            const cleanName = name.replace(/\s+/g, '');
-            return ALLOWED_MEMBERS.some(m => m.replace(/\s+/g, '') === cleanName);
-        };
+        function containsBadWords(str) {
+            if (!str) return false;
+            return BAD_WORDS.some(word => str.toLowerCase().includes(word));
+        }
 
-        window.isAdminUser = function(name) {
-            if (!name) return false;
-            const cleanName = name.replace(/\s+/g, '');
-            return ADMIN_MEMBERS.some(a => a.replace(/\s+/g, '') === cleanName);
-        };
-
-        // PROFANITY FILTERING
-        const BAD_WORDS_LIST = [
-            '바보', '멍청이', '지랄', '시발', '씨발', '씨벌', '씨바', '개새끼', '미친', '미친놈', '미친년',
-            '꺼져', '닥쳐', '병신', '떵개', '느금마', '느꺼니', '애자', '찐따', '쓰레기', '뒤져', '죽어라',
-            '새끼', '존나', '졸라', '개초딩', '좆', '싸가지', '돼지새끼', '씨X', 'ㅅㅂ', 'ㅂㅅ', 'ㅈㄴ'
-        ];
-
-        window.checkProfanity = function(text) {
-            if (!text) return { hasBadWord: false };
-            const normalizedText = text.replace(/\s+/g, '');
-            for (let word of BAD_WORDS_LIST) {
-                if (text.includes(word) || normalizedText.includes(word)) {
-                    return { hasBadWord: true, detectedWord: word };
-                }
-            }
-            return { hasBadWord: false };
-        };
-
-        // Auth Init
-        async function initAuth() {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (err) {
-                console.log("Auth initialized in offline mode");
+        window.handleUnlock = function(e) {
+            e.preventDefault();
+            const val = document.getElementById('passcodeInput').value.trim();
+            if (val.length >= 4) {
+                sessionStorage.setItem('isUnlocked', 'true');
+                document.getElementById('lockScreen').classList.add('hidden');
+                document.getElementById('appContainer').classList.remove('hidden');
+            } else {
+                document.getElementById('lockError').classList.remove('hidden');
             }
         }
-        initAuth();
 
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            if (user) {
-                listenToPosts();
-            }
-        });
+        window.lockApp = function() {
+            sessionStorage.removeItem('isUnlocked');
+            document.getElementById('lockScreen').classList.remove('hidden');
+            document.getElementById('appContainer').classList.add('hidden');
+            document.getElementById('passcodeInput').value = '';
+        }
 
-        function listenToPosts() {
-            if (!currentUser) return;
-            const postsCol = collection(db, 'artifacts', appId, 'public', 'data', 'posts');
-            
-            onSnapshot(postsCol, (snapshot) => {
-                posts = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                posts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                renderPosts();
+        function initFirestoreListener() {
+            const q = query(postsColRef, orderBy("createdAt", "desc"));
+            onSnapshot(q, (snapshot) => {
+                const cloudPosts = [];
+                snapshot.forEach(docSnap => {
+                    cloudPosts.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                posts = cloudPosts;
+                renderAll();
             }, (error) => {
-                console.error("Firestore listener error:", error);
+                console.error("실시간 동기화 에러:", error);
             });
         }
 
-        // Admin Management Controls
-        window.toggleAdminPanel = function() {
-            const adminPanel = document.getElementById('adminPanel');
-            adminPanel.classList.toggle('hidden');
-            renderRoster();
-            renderAdminList();
-        };
+        window.switchTab = function(tabName) {
+            activeTab = tabName;
+            
+            const freeBtn = document.getElementById('tabFreeBoardBtn');
+            const photoBtn = document.getElementById('tabPhotoGalleryBtn');
+            const freeSec = document.getElementById('sectionFreeBoard');
+            const photoSec = document.getElementById('sectionPhotoGallery');
 
-        window.renderAdminList = function() {
-            const container = document.getElementById('adminList');
-            container.innerHTML = ADMIN_MEMBERS.map(name => `
-                <span class="bg-crayon-yellow px-3 py-1 rounded-full border border-gray-800 text-sm font-bold flex items-center gap-1">
-                    👑 ${name}
-                    ${name === '노은율' ? '' : `<button onclick="removeAdmin('${name}')" class="text-red-500 font-bold ml-1 hover:text-red-700">✕</button>`}
-                </span>
+            [freeBtn, photoBtn].forEach(btn => {
+                btn.className = "flex-1 px-4 py-3 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-100 cursor-pointer";
+            });
+
+            [freeSec, photoSec].forEach(sec => sec.classList.add('hidden'));
+
+            if (tabName === 'free') {
+                freeBtn.className = "flex-1 px-4 py-3 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 bg-indigo-600 text-white shadow cursor-pointer";
+                freeSec.classList.remove('hidden');
+            } else if (tabName === 'photo') {
+                photoBtn.className = "flex-1 px-4 py-3 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 bg-indigo-600 text-white shadow cursor-pointer";
+                photoSec.classList.remove('hidden');
+            }
+        }
+
+        function renderAll() {
+            renderFreePosts();
+            renderPhotoGallery();
+        }
+
+        function renderFreePosts(filteredPosts = null) {
+            const container = document.getElementById('freePostsContainer');
+            const freePostsList = posts.filter(p => p.type === 'free');
+            const postsToRender = filteredPosts || freePostsList;
+            
+            document.getElementById('freePostCount').innerText = freePostsList.length;
+            document.getElementById('photoPostCount').innerText = posts.filter(p => p.type === 'photo').length;
+
+            if (postsToRender.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full bg-white p-8 rounded-2xl text-center text-slate-500 shadow-sm border border-slate-200">
+                        <span class="text-4xl block mb-2">💬</span>
+                        아직 작성된 글이 없어요. 첫 번째 이야기를 남겨보세요!
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = postsToRender.map(post => `
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3 mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="text-2xl">${post.sticker || '😊'}</span>
+                                <div>
+                                    <h3 class="title-font text-xl text-slate-900">${escapeHtml(post.title)}</h3>
+                                    <p class="text-xs text-slate-500 font-bold">✍️ ${escapeHtml(post.author)} | 📅 ${post.date}</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="deletePost('${post.id}')" class="text-slate-400 hover:text-rose-500 text-base cursor-pointer" title="삭제">🗑️</button>
+                        </div>
+                        <p class="text-slate-700 text-base leading-relaxed whitespace-pre-line mb-4">${escapeHtml(post.content)}</p>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-100">
+                        <div class="flex items-center justify-between mb-2">
+                            <button type="button" onclick="toggleLike('${post.id}')" class="flex items-center gap-1 px-3 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold rounded-xl cursor-pointer">
+                                <span>❤️</span> 좋아요 <span>${post.likes || 0}</span>
+                            </button>
+                            <span class="text-xs text-slate-400 font-bold">💬 댓글 ${(post.comments || []).length}개</span>
+                        </div>
+
+                        <div class="space-y-1.5 bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-xs">
+                            ${(post.comments || []).map(c => `
+                                <div class="bg-white p-1.5 rounded border border-slate-100">
+                                    <strong class="text-indigo-800">${escapeHtml(c.author)}:</strong>
+                                    <span class="text-slate-700">${escapeHtml(c.text)}</span>
+                                </div>
+                            `).join('')}
+
+                            <div class="flex gap-1 pt-1">
+                                <input type="text" id="commentAuthor-${post.id}" placeholder="이름" class="w-16 px-2 py-1 rounded border border-slate-300 bg-white">
+                                <input type="text" id="commentText-${post.id}" placeholder="댓글 남기기..." class="flex-1 px-2 py-1 rounded border border-slate-300 bg-white">
+                                <button type="button" onclick="addComment('${post.id}')" class="px-2.5 py-1 bg-indigo-600 text-white font-bold rounded cursor-pointer">등록</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             `).join('');
-        };
+        }
 
-        window.addAdmin = function() {
-            const input = document.getElementById('newAdminInput');
-            const name = input.value.trim();
-            if (name && isMemberAllowed(name) && !ADMIN_MEMBERS.includes(name)) {
-                ADMIN_MEMBERS.push(name);
-                input.value = '';
-                renderAdminList();
-                showToast(`'${name}' 님이 관리자로 지정되었습니다! 👑`);
-            } else if (!isMemberAllowed(name)) {
-                showToast("우리반 명단에 있는 이름만 관리자로 지정할 수 있어요!");
+        function renderPhotoGallery() {
+            const container = document.getElementById('photoGridContainer');
+            const photoPosts = posts.filter(p => p.type === 'photo');
+
+            document.getElementById('freePostCount').innerText = posts.filter(p => p.type === 'free').length;
+            document.getElementById('photoPostCount').innerText = photoPosts.length;
+
+            if (photoPosts.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full bg-white p-8 rounded-2xl text-center text-slate-500 shadow-sm border border-slate-200">
+                        <span class="text-4xl block mb-2">📸</span>
+                        아직 공유된 사진이 없어요! 추억 사진을 올려보세요.
+                    </div>
+                `;
+                return;
             }
-        };
 
-        window.removeAdmin = function(name) {
-            if (confirm(`'${name}' 님의 관리자 권한을 해제하시겠습니까?`)) {
-                ADMIN_MEMBERS = ADMIN_MEMBERS.filter(a => a !== name);
-                renderAdminList();
-                showToast(`'${name}' 님의 관리자 권한이 해제되었습니다.`);
-            }
-        };
+            container.innerHTML = photoPosts.map(post => `
+                <div class="polaroid relative flex flex-col justify-between">
+                    <div class="washi-tape"></div>
+                    <div class="cursor-pointer" onclick="openPhotoModal('${escapeHtml(post.photoUrl)}', '${escapeHtml(post.title)}', '${escapeHtml(post.content)}', '${escapeHtml(post.author)}', '${post.date}')">
+                        <div class="overflow-hidden rounded-lg bg-slate-100 aspect-video mb-3">
+                            <img src="${escapeHtml(post.photoUrl)}" alt="${escapeHtml(post.title)}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                        </div>
+                        <h4 class="title-font text-lg text-slate-900 truncate">${escapeHtml(post.title)}</h4>
+                        <p class="text-xs text-slate-600 line-clamp-2 mb-2">${escapeHtml(post.content)}</p>
+                    </div>
 
-        window.changeBackground = function(color) {
-            document.getElementById('appBody').style.backgroundColor = color;
-            showToast("배경 테마가 변경되었습니다!");
-        };
-
-        window.renderRoster = function() {
-            const container = document.getElementById('rosterList');
-            container.innerHTML = ALLOWED_MEMBERS.map(name => `
-                <span class="bg-gray-100 px-3 py-1 rounded-full border border-gray-400 text-sm font-bold flex items-center gap-1">
-                    ${name}
-                    ${name === '노은율' ? '' : `<button onclick="removeMember('${name}')" class="text-red-500 font-bold ml-1 hover:text-red-700">✕</button>`}
-                </span>
+                    <div class="pt-2 border-t border-slate-100">
+                        <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
+                            <span class="font-bold text-indigo-700">✍️ ${escapeHtml(post.author)}</span>
+                            <button type="button" onclick="deletePost('${post.id}')" class="text-slate-400 hover:text-rose-500 cursor-pointer">🗑️</button>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <button type="button" onclick="toggleLike('${post.id}')" class="flex items-center gap-1 text-xs px-2 py-0.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-lg cursor-pointer">
+                                <span>❤️</span> ${post.likes || 0}
+                            </button>
+                            <span class="text-xs text-slate-400">${post.date}</span>
+                        </div>
+                    </div>
+                </div>
             `).join('');
-        };
+        }
 
-        window.addMember = function() {
-            const input = document.getElementById('newMemberInput');
-            const name = input.value.trim();
-            if (name && !ALLOWED_MEMBERS.includes(name)) {
-                ALLOWED_MEMBERS.push(name);
-                input.value = '';
-                renderRoster();
-                showToast(`'${name}' 학생이 명단에 추가되었습니다.`);
+        window.toggleLike = async function(id) {
+            const post = posts.find(p => p.id === id);
+            if (post) {
+                try {
+                    const docRef = doc(db, "school_posts", id);
+                    await updateDoc(docRef, { likes: (post.likes || 0) + 1 });
+                } catch (e) {
+                    console.error("좋아요 에러:", e);
+                }
             }
-        };
+        }
 
-        window.removeMember = function(name) {
-            if (confirm(`'${name}' 학생을 명단에서 방출하시겠습니까?`)) {
-                ALLOWED_MEMBERS = ALLOWED_MEMBERS.filter(m => m !== name);
-                renderRoster();
-                showToast(`'${name}' 학생이 명단에서 제외되었습니다.`);
+        window.addComment = async function(postId) {
+            const authorInput = document.getElementById(`commentAuthor-${postId}`);
+            const textInput = document.getElementById(`commentText-${postId}`);
+            if (!authorInput || !textInput) return;
+
+            const author = authorInput.value.trim();
+            const text = textInput.value.trim();
+
+            if (!author || !text) {
+                showWarningModal('입력 오류', '이름과 댓글 내용을 모두 입력해주세요!');
+                return;
             }
-        };
 
-        // UI Handlers
-        window.handleLogin = function(e) {
-            e.preventDefault();
-            const passwordInput = document.getElementById('classPassword').value;
-            const errorMsg = document.getElementById('loginError');
-
-            if (passwordInput === '0405') {
-                document.getElementById('loginModal').classList.add('hidden');
-                document.getElementById('mainContent').classList.remove('hidden');
-                renderPosts();
-                generateQRCode();
-            } else {
-                errorMsg.classList.remove('hidden');
-                document.getElementById('classPassword').value = '';
+            if (containsBadWords(author) || containsBadWords(text)) {
+                showWarningModal('사용 제한', '바른 말을 사용해 주세요! 부적절한 단어가 포함되어 있습니다.');
+                return;
             }
-        };
 
-        window.switchTab = function(tab) {
-            currentTab = tab;
-            const shortBtn = document.getElementById('tabShortBtn');
-            const photoBtn = document.getElementById('tabPhotoBtn');
-            const shortFeed = document.getElementById('shortFeed');
-            const photoFeed = document.getElementById('photoFeed');
-            const photoGroup = document.getElementById('photoUrlGroup');
-            const formTitle = document.getElementById('formTitleText');
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                const newComments = [...(post.comments || []), { author, text }];
+                try {
+                    const docRef = doc(db, "school_posts", postId);
+                    await updateDoc(docRef, { comments: newComments });
+                    authorInput.value = '';
+                    textInput.value = '';
+                } catch (e) {
+                    console.error("댓글 에러:", e);
+                }
+            }
+        }
 
-            if (tab === 'short') {
-                shortBtn.className = "crayon-btn bg-crayon-blue px-6 py-3 text-2xl font-bold flex items-center gap-2";
-                photoBtn.className = "crayon-btn bg-white opacity-60 hover:opacity-100 px-6 py-3 text-2xl font-bold flex items-center gap-2";
-                shortFeed.classList.remove('hidden');
-                photoFeed.classList.add('hidden');
-                photoGroup.classList.add('hidden');
-                formTitle.textContent = "짧은 글 작성하기";
-            } else {
-                photoBtn.className = "crayon-btn bg-crayon-purple px-6 py-3 text-2xl font-bold flex items-center gap-2";
-                shortBtn.className = "crayon-btn bg-white opacity-60 hover:opacity-100 px-6 py-3 text-2xl font-bold flex items-center gap-2";
-                photoFeed.classList.remove('hidden');
-                shortFeed.classList.add('hidden');
+        window.deletePost = async function(id) {
+            if (!confirm("정말 이 글을 삭제하시겠습니까?")) return;
+            try {
+                const docRef = doc(db, "school_posts", id);
+                await deleteDoc(docRef);
+            } catch (e) {
+                console.error("삭제 에러:", e);
+            }
+        }
+
+        window.openNewPostModal = function() {
+            document.getElementById('postModal').classList.remove('hidden');
+            const mode = activeTab === 'photo' ? 'photo' : 'free';
+            toggleFormMode(mode);
+            document.querySelectorAll('input[name="postType"]').forEach(r => {
+                r.checked = (r.value === mode);
+            });
+        }
+
+        window.closeNewPostModal = function() {
+            document.getElementById('postModal').classList.add('hidden');
+            document.getElementById('postForm').reset();
+            document.getElementById('imagePreviewContainer').classList.add('hidden');
+            currentPhotoData = '';
+        }
+
+        window.toggleFormMode = function(mode) {
+            const photoGroup = document.getElementById('photoUploadGroup');
+            const modalTitle = document.getElementById('modalTitle');
+            if (mode === 'photo') {
                 photoGroup.classList.remove('hidden');
-                formTitle.textContent = "추억 사진 올리기";
+                modalTitle.innerHTML = '<span>📸</span> 추억 사진 올리기';
+            } else {
+                photoGroup.classList.add('hidden');
+                modalTitle.innerHTML = '<span>✏️</span> 수다방 글쓰기';
             }
-            renderPosts();
-        };
+        }
 
-        window.toggleWriteForm = function() {
-            const form = document.getElementById('writeFormContainer');
-            form.classList.toggle('hidden');
-        };
+        // 사진 자동 압축 엔진
+        window.handleImageFileSelect = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-        window.handleImageUpload = function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    document.getElementById('photoDataUrl').value = event.target.result;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_SIZE = 900;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
+                    } else {
+                        if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    currentPhotoData = canvas.toDataURL('image/jpeg', 0.7);
+                    const previewImg = document.getElementById('imagePreview');
+                    previewImg.src = currentPhotoData;
+                    document.getElementById('imagePreviewContainer').classList.remove('hidden');
                 };
-                reader.readAsDataURL(file);
-            }
-        };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
 
-        window.handleCreatePost = async function(e) {
+        window.handlePostSubmit = async function(e) {
             e.preventDefault();
-            const author = document.getElementById('authorName').value.trim();
+            const postTypeInput = document.querySelector('input[name="postType"]:checked');
+            const postType = postTypeInput ? postTypeInput.value : activeTab;
+            const author = document.getElementById('postAuthor').value.trim();
+            const title = document.getElementById('postTitle').value.trim();
+            const sticker = document.getElementById('postSticker').value;
             const content = document.getElementById('postContent').value.trim();
-            const photoDataUrl = document.getElementById('photoDataUrl').value;
 
-            if (!author || !content) return;
-
-            if (isAdminUser(author)) {
-                isAdminActive = true;
-            }
-
-            if (!isMemberAllowed(author)) {
-                showWarningAlert("🔒 4학년 5반 전용 게시판", `'${author}' 이름은 우리반 명단에 없어요!`);
+            if (!author || !title || !content) {
+                showWarningModal('입력 확인', '작성자, 제목, 내용을 모두 입력해주세요!');
                 return;
             }
 
-            if (checkProfanity(author).hasBadWord || checkProfanity(content).hasBadWord) {
-                showWarningAlert("🌸 예쁜 말을 사용해요!", "게시글에 안 좋은 말이 들어있어 올릴 수 없어요.");
+            if (containsBadWords(author) || containsBadWords(title) || containsBadWords(content)) {
+                showWarningModal('사용 제한', '바른 말을 사용해 주세요! 부적절한 단어가 포함되어 있습니다.');
                 return;
             }
 
-            const today = new Date();
-            const dateStr = `${today.getFullYear()}. ${String(today.getMonth() + 1).padStart(2, '0')}. ${String(today.getDate()).padStart(2, '0')}`;
+            let finalPhotoUrl = currentPhotoData;
+            if (postType === 'photo' && !finalPhotoUrl) {
+                showWarningModal('사진 필요', '사진방에 올릴 사진을 선택해주세요!');
+                return;
+            }
+
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
 
             const newPost = {
-                type: currentTab,
-                author: author,
-                content: content,
-                imageUrl: currentTab === 'photo' ? (photoDataUrl || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=600&q=80') : null,
-                likes: 0,
+                type: postType,
+                title,
+                author,
+                sticker,
+                content,
+                photoUrl: postType === 'photo' ? finalPhotoUrl : '',
                 date: dateStr,
                 createdAt: Date.now(),
+                likes: 0,
                 comments: []
             };
 
-            if (currentUser) {
-                const postsCol = collection(db, 'artifacts', appId, 'public', 'data', 'posts');
-                await addDoc(postsCol, newPost);
+            try {
+                await addDoc(postsColRef, newPost);
+                closeNewPostModal();
+                switchTab(postType);
+            } catch (e) {
+                console.error("저장 에러:", e);
+                showWarningModal('저장 오류', '데이터 저장 중 오류가 발생했습니다. (Firestore 보안 규칙을 확인해주세요)');
+            }
+        }
+
+        window.openPhotoModal = function(url, title, caption, author, date) {
+            document.getElementById('lightboxImg').src = url;
+            document.getElementById('lightboxTitle').innerText = title;
+            document.getElementById('lightboxCaption').innerText = caption;
+            document.getElementById('lightboxAuthor').innerText = `✍️ ${author}`;
+            document.getElementById('lightboxDate').innerText = `📅 ${date}`;
+            document.getElementById('photoModal').classList.remove('hidden');
+        }
+
+        window.closePhotoModal = function() {
+            document.getElementById('photoModal').classList.add('hidden');
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('isUnlocked') === 'true') {
+                document.getElementById('lockScreen').classList.add('hidden');
+                document.getElementById('appContainer').classList.remove('hidden');
             } else {
-                posts.unshift({ id: Date.now().toString(), ...newPost });
-                renderPosts();
+                document.getElementById('lockScreen').classList.remove('hidden');
             }
-
-            document.getElementById('postForm').reset();
-            document.getElementById('photoDataUrl').value = '';
-            toggleWriteForm();
-            showToast("멋진 글이 등록되었어요! ✨");
-        };
-
-        window.likePost = async function(postId) {
-            const post = posts.find(p => p.id === postId);
-            if (!post) return;
-
-            const updatedLikes = (post.likes || 0) + 1;
-            if (currentUser) {
-                const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
-                await updateDoc(postRef, { likes: updatedLikes });
-            } else {
-                post.likes = updatedLikes;
-                renderPosts();
-            }
-        };
-
-        window.addComment = async function(e, postId) {
-            e.preventDefault();
-            const nameInput = e.target.querySelector('.comment-author');
-            const textInput = e.target.querySelector('.comment-text');
-
-            const author = nameInput.value.trim();
-            const text = textInput.value.trim();
-
-            if (!author || !text) return;
-
-            if (isAdminUser(author)) {
-                isAdminActive = true;
-            }
-
-            if (!isMemberAllowed(author)) {
-                showWarningAlert("🔒 4학년 5반 전용", `'${author}' 이름은 우리반 명단에 없어요!`);
-                return;
-            }
-
-            if (checkProfanity(author).hasBadWord || checkProfanity(text).hasBadWord) {
-                showWarningAlert("🌸 고운 말을 사용해요!", "댓글에 나쁜 말이 들어있어요.");
-                return;
-            }
-
-            const post = posts.find(p => p.id === postId);
-            if (!post) return;
-
-            const today = new Date();
-            const dateStr = `${today.getFullYear()}. ${String(today.getMonth() + 1).padStart(2, '0')}. ${String(today.getDate()).padStart(2, '0')}`;
-            
-            const updatedComments = [
-                ...(post.comments || []),
-                { id: Date.now(), author: author, text: text, date: dateStr }
-            ];
-
-            if (currentUser) {
-                const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
-                await updateDoc(postRef, { comments: updatedComments });
-            } else {
-                post.comments = updatedComments;
-                renderPosts();
-            }
-
-            textInput.value = '';
-            showToast("댓글이 추가되었습니다! 💬");
-        };
-
-        window.deletePost = async function(postId) {
-            const post = posts.find(p => p.id === postId);
-
-            if (isAdminActive) {
-                if (confirm("👑 [관리자 권한] 이 게시글을 원클릭 삭제하시겠습니까?")) {
-                    await executeDeletePost(postId);
-                }
-                return;
-            }
-
-            const inputName = prompt("게시글을 삭제하려면 작성자 이름(또는 관리자 이름)을 입력하세요:");
-
-            if (isAdminUser(inputName)) {
-                isAdminActive = true;
-                await executeDeletePost(postId);
-            } else if (post && inputName === post.author) {
-                await executeDeletePost(postId);
-            } else if (inputName !== null) {
-                showToast("작성자 이름이 일치하지 않아요!");
-            }
-        };
-
-        async function executeDeletePost(postId) {
-            if (currentUser) {
-                const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
-                await deleteDoc(postRef);
-            } else {
-                posts = posts.filter(p => p.id !== postId);
-                renderPosts();
-            }
-            showToast("게시글이 삭제되었습니다.");
-        }
-
-        window.deleteComment = async function(postId, commentIndex) {
-            const post = posts.find(p => p.id === postId);
-            if (!post || !post.comments) return;
-
-            const targetComment = post.comments[commentIndex];
-
-            if (isAdminActive) {
-                if (confirm("👑 [관리자 권한] 이 댓글을 원클릭 삭제하시겠습니까?")) {
-                    await executeDeleteComment(post, commentIndex);
-                }
-                return;
-            }
-
-            const inputName = prompt("댓글을 삭제하려면 작성자 이름(또는 관리자 이름)을 입력하세요:");
-            if (isAdminUser(inputName)) {
-                isAdminActive = true;
-                await executeDeleteComment(post, commentIndex);
-            } else if (targetComment && inputName === targetComment.author) {
-                await executeDeleteComment(post, commentIndex);
-            } else if (inputName !== null) {
-                showToast("작성자 이름이 일치하지 않아요!");
-            }
-        };
-
-        async function executeDeleteComment(post, commentIndex) {
-            const updatedComments = post.comments.filter((_, idx) => idx !== commentIndex);
-            if (currentUser) {
-                const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', post.id);
-                await updateDoc(postRef, { comments: updatedComments });
-            } else {
-                post.comments = updatedComments;
-                renderPosts();
-            }
-            showToast("댓글이 삭제되었습니다.");
-        }
-
-        // QR Code
-        window.generateQRCode = function() {
-            const qrcodeContainer = document.getElementById('qrcodeCanvas');
-            qrcodeContainer.innerHTML = "";
-            new QRCode(qrcodeContainer, {
-                text: window.location.href,
-                width: 160,
-                height: 160,
-                colorDark : "#4A3E3D",
-                colorLight : "#ffffff"
-            });
-        };
-
-        window.toggleQRModal = function() {
-            const modal = document.getElementById('qrModal');
-            modal.classList.toggle('hidden');
-        };
-
-        // Render Functions
-        function renderPosts() {
-            const shortFeed = document.getElementById('shortFeed');
-            const photoFeed = document.getElementById('photoFeed');
-
-            const filteredPosts = posts.filter(p => p.type === currentTab);
-
-            if (currentTab === 'short') {
-                if (filteredPosts.length === 0) {
-                    shortFeed.innerHTML = `<div class="text-center py-12 text-2xl text-gray-500">아직 작성된 글이 없어요. 첫 번째 주인공이 되어보세요! ✏️</div>`;
-                    return;
-                }
-                shortFeed.innerHTML = filteredPosts.map(post => createShortPostHTML(post)).join('');
-            } else {
-                if (filteredPosts.length === 0) {
-                    photoFeed.innerHTML = `<div class="col-span-full text-center py-12 text-2xl text-gray-500">아직 등록된 사진이 없어요. 예쁜 추억을 공유해줘요! 🖼️</div>`;
-                    return;
-                }
-                photoFeed.innerHTML = filteredPosts.map(post => createPhotoPostHTML(post)).join('');
-            }
-        }
-
-        function createShortPostHTML(post) {
-            const comments = post.comments || [];
-            const isAdmin = isAdminUser(post.author);
-            return `
-                <article class="crayon-box bg-white p-6 relative bg-gradient-to-br from-white to-amber-50">
-                    <div class="flex justify-between items-start mb-3 border-b-2 border-dashed border-gray-200 pb-2">
-                        <div class="flex items-center gap-2">
-                            <span class="${isAdmin ? 'bg-crayon-purple' : 'bg-crayon-green'} px-3 py-1 rounded-full text-lg font-bold border-2 border-gray-800">
-                                ${isAdmin ? '👑' : '👤'} ${escapeHtml(post.author)}
-                            </span>
-                            <span class="text-gray-500 text-sm">${post.date}</span>
-                        </div>
-                        <button onclick="deletePost('${post.id}')" class="text-gray-400 hover:text-red-500 text-sm font-bold">
-                            ✕ 삭제
-                        </button>
-                    </div>
-
-                    <p class="text-2xl leading-relaxed my-4 text-gray-800 font-medium whitespace-pre-line">
-                        ${escapeHtml(post.content)}
-                    </p>
-
-                    <div class="flex justify-between items-center mt-4 pt-2 border-t border-gray-100">
-                        <button onclick="likePost('${post.id}')" class="crayon-btn bg-crayon-pink hover:bg-pink-300 px-4 py-1.5 text-lg font-bold flex items-center gap-1">
-                            ❤️ 좋아요 <span>${post.likes || 0}</span>
-                        </button>
-                        <span class="text-gray-600 font-bold">💬 댓글 ${comments.length}개</span>
-                    </div>
-
-                    <div class="mt-4 pt-3 bg-gray-50 p-4 rounded-xl border-2 border-gray-200">
-                        <div class="space-y-2 mb-3 max-h-40 overflow-y-auto">
-                            ${comments.map((c, idx) => `
-                                <div class="bg-white p-2 rounded-lg border border-gray-300 text-base flex justify-between items-center">
-                                    <div>
-                                        <span class="font-bold ${isAdminUser(c.author) ? 'text-purple-600' : 'text-blue-600'}">✍️ ${escapeHtml(c.author)}:</span> 
-                                        <span class="text-gray-800">${escapeHtml(c.text)}</span>
-                                        <span class="text-xs text-gray-400 ml-2">${c.date}</span>
-                                    </div>
-                                    <button onclick="deleteComment('${post.id}', ${idx})" class="text-xs text-gray-400 hover:text-red-500 font-bold ml-2">✕</button>
-                                </div>
-                            `).join('')}
-                        </div>
-
-                        <form onsubmit="addComment(event, '${post.id}')" class="flex gap-2 flex-wrap sm:flex-nowrap">
-                            <input type="text" placeholder="이름" required 
-                                   class="comment-author crayon-input w-24 p-1.5 text-sm bg-white">
-                            <input type="text" placeholder="댓글을 써봐요~" required 
-                                   class="comment-text crayon-input flex-1 p-1.5 text-sm bg-white">
-                            <button type="submit" class="crayon-btn bg-crayon-yellow hover:bg-yellow-300 px-3 py-1 text-base font-bold whitespace-nowrap">
-                                등록
-                            </button>
-                        </form>
-                    </div>
-                </article>
-            `;
-        }
-
-        function createPhotoPostHTML(post) {
-            const comments = post.comments || [];
-            const isAdmin = isAdminUser(post.author);
-            return `
-                <article class="crayon-box bg-white p-5 flex flex-col justify-between">
-                    <div>
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="${isAdmin ? 'bg-crayon-purple' : 'bg-crayon-green'} px-3 py-1 rounded-full text-base font-bold border-2 border-gray-800">
-                                📸 ${escapeHtml(post.author)}
-                            </span>
-                            <button onclick="deletePost('${post.id}')" class="text-gray-400 hover:text-red-500 text-xs font-bold">
-                                ✕ 삭제
-                            </button>
-                        </div>
-
-                        <div class="crayon-box overflow-hidden mb-3 bg-gray-100 max-h-64 flex items-center justify-center">
-                            <img src="${post.imageUrl}" alt="추억 사진" class="w-full h-48 object-cover hover:scale-105 transition duration-300"
-                                 onerror="this.src='https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=600&q=80'">
-                        </div>
-
-                        <p class="text-xl mb-3 text-gray-800 font-medium whitespace-pre-line">
-                            ${escapeHtml(post.content)}
-                        </p>
-                    </div>
-
-                    <div>
-                        <div class="flex justify-between items-center mb-3">
-                            <button onclick="likePost('${post.id}')" class="crayon-btn bg-crayon-pink hover:bg-pink-300 px-3 py-1 text-base font-bold flex items-center gap-1">
-                                ❤️ 좋아요 <span>${post.likes || 0}</span>
-                            </button>
-                            <span class="text-xs text-gray-400">${post.date}</span>
-                        </div>
-
-                        <div class="pt-2 bg-gray-50 p-3 rounded-xl border-2 border-gray-200">
-                            <div class="space-y-1.5 mb-2 max-h-32 overflow-y-auto">
-                                ${comments.map((c, idx) => `
-                                    <div class="bg-white p-1.5 rounded border border-gray-200 text-xs flex justify-between items-center">
-                                        <div>
-                                            <span class="font-bold ${isAdminUser(c.author) ? 'text-purple-600' : 'text-blue-600'}">${escapeHtml(c.author)}:</span> 
-                                            <span>${escapeHtml(c.text)}</span>
-                                        </div>
-                                        <button onclick="deleteComment('${post.id}', ${idx})" class="text-xs text-gray-400 hover:text-red-500 font-bold ml-1">✕</button>
-                                    </div>
-                                `).join('')}
-                            </div>
-
-                            <form onsubmit="addComment(event, '${post.id}')" class="flex gap-1.5">
-                                <input type="text" placeholder="이름" required 
-                                       class="comment-author crayon-input w-16 p-1 text-xs bg-white">
-                                <input type="text" placeholder="댓글..." required 
-                                       class="comment-text crayon-input flex-1 p-1 text-xs bg-white">
-                                <button type="submit" class="crayon-btn bg-crayon-yellow hover:bg-yellow-300 px-2 py-1 text-xs font-bold">
-                                    달기
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </article>
-            `;
-        }
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function showWarningAlert(title, message) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = "fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4";
-            alertDiv.innerHTML = `
-                <div class="crayon-box bg-white p-6 max-w-sm w-full text-center bg-crayon-pink">
-                    <div class="text-5xl mb-2">🛑</div>
-                    <h3 class="text-2xl font-bold font-jua text-gray-800 mb-2">${title}</h3>
-                    <p class="text-lg text-gray-800 mb-6 leading-snug">${message}</p>
-                    <button onclick="this.closest('.fixed').remove()" class="crayon-btn w-full bg-white py-2 text-xl font-bold hover:bg-gray-100">
-                        확인
-                    </button>
-                </div>
-            `;
-            document.body.appendChild(alertDiv);
-        }
-
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.className = "fixed bottom-5 right-5 crayon-btn bg-gray-800 text-white px-6 py-3 rounded-full text-lg z-50 animate-bounce";
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2500);
-        }
+            initFirestoreListener();
+        });
     </script>
 </body>
 </html>
