@@ -3,25 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4학년 5반 실시간 소통 공간</title>
+    <title>4학년 5반 추억보관소</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts (Gaegu, Jua) -->
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Jua&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #f8fafc;
+            font-family: 'Gaegu', cursive;
+            background-color: #fffdf0;
+            background-image: radial-gradient(#fde68a 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            font-size: 1.25rem;
         }
         .title-font {
             font-family: 'Jua', sans-serif;
         }
+        /* 밝고 명랑한 크레파스 테두리 효과 */
+        .crayon-box-pink {
+            border: 4px solid #f43f5e;
+            border-radius: 28px;
+            box-shadow: 4px 6px 0px #e11d48;
+        }
+        .crayon-box-yellow {
+            border: 4px solid #f59e0b;
+            border-radius: 28px;
+            box-shadow: 4px 6px 0px #d97706;
+        }
+        .crayon-box-blue {
+            border: 4px solid #0ea5e9;
+            border-radius: 28px;
+            box-shadow: 4px 6px 0px #0284c7;
+        }
+        .crayon-box-green {
+            border: 4px solid #10b981;
+            border-radius: 28px;
+            box-shadow: 4px 6px 0px #059669;
+        }
+        .crayon-input {
+            border: 3px solid #fbbf24;
+            border-radius: 18px;
+        }
+        /* 실시간 공유 폴라로이드 사진 카드 */
         .polaroid {
             background: #ffffff;
             padding: 1rem 1rem 2rem 1rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.08), 3px 3px 0px #f59e0b;
             transform: rotate(-1deg);
             transition: transform 0.2s;
+            border: 3px solid #fef08a;
+            border-radius: 20px;
         }
         .polaroid:nth-child(even) {
             transform: rotate(1deg);
@@ -31,37 +62,40 @@
         }
         .washi-tape {
             position: absolute;
-            top: -10px;
+            top: -12px;
             left: 50%;
             transform: translateX(-50%);
-            width: 80px;
-            height: 22px;
-            background: rgba(253, 224, 71, 0.8);
-            border: 1px dashed #ca8a04;
+            width: 90px;
+            height: 24px;
+            background: rgba(254, 240, 138, 0.9);
+            border: 1px dashed #eab308;
+        }
+        .paper-note {
+            background: repeating-linear-gradient(#ffffff, #ffffff 27px, #fef9c3 28px);
         }
     </style>
 </head>
 <body class="min-h-screen text-slate-800 pb-12">
 
-    <!-- Passcode Lock Screen -->
-    <div id="lockScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full text-center border-4 border-indigo-500">
-            <div class="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl animate-bounce">
-                🏫
+    <!-- Passcode Lock Screen (암호 0405) -->
+    <div id="lockScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-amber-950/85 backdrop-blur-sm p-4">
+        <div class="bg-white p-8 rounded-3xl crayon-box-yellow max-w-md w-full text-center">
+            <div class="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl animate-bounce">
+                🖍️
             </div>
-            <h1 class="title-font text-3xl text-indigo-900 mb-2">4학년 5반 소통 공간</h1>
-            <p class="text-gray-600 mb-6 font-bold">반 친구들만 입장할 수 있어요!<br>입장 번호(비밀번호 4자리)를 입력해주세요.</p>
+            <h1 class="title-font text-3xl text-amber-900 mb-2">4학년 5반 추억보관소</h1>
+            <p class="text-gray-600 mb-6 font-bold">우리반 친구들만 들어올 수 있어요!<br>우리반 암호(4자리)를 입력해주세요.</p>
             
             <form onsubmit="handleUnlock(event)" class="space-y-4">
                 <div>
-                    <input type="password" id="passcodeInput" placeholder="입장 번호 4자리" maxlength="6" 
-                        class="w-full px-4 py-3 text-center text-2xl tracking-widest border-2 border-indigo-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-indigo-50/50" required>
+                    <input type="password" id="passcodeInput" placeholder="우리반 암호" maxlength="4" 
+                        class="w-full px-4 py-3 text-center text-3xl tracking-widest crayon-input focus:outline-none focus:ring-2 focus:ring-amber-500 bg-amber-50/50 font-bold" required>
                 </div>
-                <button type="submit" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xl rounded-2xl transition-all shadow-lg cursor-pointer">
-                    🚀 입장하기
+                <button type="submit" class="w-full py-3.5 bg-amber-400 hover:bg-amber-500 active:scale-95 text-amber-950 font-bold text-2xl rounded-2xl crayon-box-yellow transition-all cursor-pointer">
+                    🌈 입장하기
                 </button>
             </form>
-            <p id="lockError" class="text-rose-500 text-sm mt-3 font-bold hidden">비밀번호는 4자리 이상 입력해 주세요!</p>
+            <p id="lockError" class="text-rose-500 text-sm mt-3 font-bold hidden">비밀번호가 틀렸어요! (우리반 번호를 생각해보세요 힌트: 0405)</p>
         </div>
     </div>
 
@@ -69,59 +103,94 @@
     <div id="appContainer" class="hidden max-w-5xl mx-auto px-4 py-6">
         
         <!-- Header Banner -->
-        <header class="bg-gradient-to-r from-indigo-600 to-blue-600 p-6 sm:p-8 rounded-3xl shadow-xl text-white mb-6">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+        <header class="bg-gradient-to-r from-amber-300 via-rose-300 to-sky-300 p-6 sm:p-8 rounded-3xl crayon-box-yellow text-slate-800 mb-6 relative overflow-hidden shadow-lg">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left mb-5">
                 <div class="flex items-center gap-3">
-                    <span class="text-5xl">🎒</span>
+                    <span class="text-5xl sm:text-6xl animate-pulse">🎨</span>
                     <div>
-                        <h1 class="title-font text-4xl sm:text-5xl text-yellow-300 drop-shadow-md">4학년 5반 소통방</h1>
-                        <p class="text-base sm:text-lg text-indigo-100 font-bold">친구들과 자유롭게 글과 사진을 나누는 공간이에요!</p>
+                        <h1 class="title-font text-4xl sm:text-5xl text-amber-950 drop-shadow-sm">4학년 5반 추억보관소</h1>
+                        <p class="text-lg sm:text-xl text-amber-900 font-bold">우리가 함께 만드는 즐겁고 따뜻한 이야기 & 실시간 사진첩 ✨</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button type="button" onclick="openNewPostModal()" class="px-6 py-3.5 bg-yellow-400 hover:bg-yellow-300 active:scale-95 text-slate-900 font-bold text-xl rounded-2xl transition-all flex items-center gap-2 shadow-lg cursor-pointer">
-                        <span>✏️</span> 새 글 쓰기
+                    <button type="button" onclick="openNewPostModal()" class="px-6 py-3.5 bg-rose-500 hover:bg-rose-600 active:scale-95 text-white font-bold text-2xl rounded-2xl crayon-box-pink transition-all flex items-center gap-2 shadow-xl cursor-pointer">
+                        <span>✏️</span> 새 글 / 사진 올리기
                     </button>
-                    <button type="button" onclick="lockApp()" class="px-3.5 py-3.5 bg-indigo-800/80 hover:bg-indigo-700 text-white rounded-2xl font-bold text-sm cursor-pointer" title="잠금">
+                    <button type="button" onclick="lockApp()" class="px-4 py-3.5 bg-amber-800/80 hover:bg-amber-900 text-white rounded-2xl font-bold text-base cursor-pointer" title="잠금">
                         🔒
                     </button>
+                </div>
+            </div>
+
+            <!-- Class Members Tag Banner -->
+            <div class="bg-white/70 backdrop-blur-sm p-4 rounded-2xl border-2 border-amber-400/80">
+                <div class="flex items-center justify-center md:justify-start gap-2 mb-2 text-amber-950 font-bold text-base sm:text-lg">
+                    <span>👥</span> <span>우리반 친구들과 전영주선생님 (실명 작성자만 등록 가능)</span>
+                </div>
+                <div class="flex flex-wrap justify-center md:justify-start gap-1.5 sm:gap-2 text-sm sm:text-base font-bold text-slate-700">
+                    <span class="px-2.5 py-0.5 bg-rose-100 text-rose-800 rounded-xl border border-rose-300">🌸 전영주선생님</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">강민정</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">고은혁</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">구재이</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">김민규</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">김보윤</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">김영훈</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">김윤슬</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">노은율</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">문장우</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">박리원</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">서태희</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">오도현</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">우주하</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">이다연</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">이서준</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">이소율</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">이채은</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">임세준</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">조규원</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">조민준</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">조승우</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">조하린</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">차수연</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">최유주</span>
+                    <span class="px-2 py-0.5 bg-white/90 rounded-xl border border-amber-200">한찬희</span>
                 </div>
             </div>
         </header>
 
         <!-- Navigation Tabs -->
-        <div class="flex gap-3 mb-6 bg-white p-3 rounded-2xl shadow-md border border-slate-100">
-            <button type="button" id="tabFreeBoardBtn" onclick="switchTab('free')" class="flex-1 px-4 py-3 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 bg-indigo-600 text-white shadow cursor-pointer">
-                💬 반 친구 수다방 (<span id="freePostCount">0</span>)
+        <div class="flex gap-3 mb-6 bg-white p-3 rounded-3xl crayon-box-yellow">
+            <button type="button" id="tabFreeBoardBtn" onclick="switchTab('free')" class="flex-1 px-4 py-3 rounded-2xl font-bold text-xl transition-all flex items-center justify-center gap-2 bg-rose-500 text-white shadow cursor-pointer">
+                💬 이야기 수다방 (<span id="freePostCount">0</span>)
             </button>
-            <button type="button" id="tabPhotoGalleryBtn" onclick="switchTab('photo')" class="flex-1 px-4 py-3 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-100 cursor-pointer">
-                📸 추억 사진방 (<span id="photoPostCount">0</span>)
+            <button type="button" id="tabPhotoGalleryBtn" onclick="switchTab('photo')" class="flex-1 px-4 py-3 rounded-2xl font-bold text-xl transition-all flex items-center justify-center gap-2 text-amber-900 hover:bg-amber-100 cursor-pointer">
+                📸 실시간 추억 사진방 (<span id="photoPostCount">0</span>)
             </button>
         </div>
 
         <!-- TAB 1: Free Board -->
         <section id="sectionFreeBoard" class="space-y-6">
-            <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row gap-3 items-center justify-between">
+            <div class="bg-white p-4 sm:p-5 rounded-3xl crayon-box-yellow flex flex-col sm:flex-row gap-3 items-center justify-between">
                 <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <span class="text-xl">🔍</span>
-                    <input type="text" id="freeSearchInput" oninput="filterFreePosts()" placeholder="내용 또는 이름 검색..." class="w-full sm:w-64 px-4 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm bg-slate-50">
+                    <span class="text-2xl">🔍</span>
+                    <input type="text" id="freeSearchInput" oninput="filterFreePosts()" placeholder="이야기나 작성자 검색..." class="w-full sm:w-64 px-4 py-2 crayon-input focus:outline-none focus:ring-2 focus:ring-amber-500 text-base bg-amber-50/40 font-bold">
                 </div>
-                <div class="text-sm font-bold text-indigo-700 text-center sm:text-right">
-                    ✨ 친구들에게 상처 주는 말은 절대 안돼요! 바른 말을 사용합시다 😊
+                <div class="text-base font-bold text-rose-600 text-center sm:text-right">
+                    ✨ 바르고 고운 말로 서로를 칭찬하고 응원해요!
                 </div>
             </div>
 
             <div id="freePostsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
         </section>
 
-        <!-- TAB 2: Photo Gallery -->
+        <!-- TAB 2: Photo Gallery (실시간 공유) -->
         <section id="sectionPhotoGallery" class="space-y-6 hidden">
-            <div class="bg-indigo-50 p-5 rounded-2xl border-2 border-indigo-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="bg-amber-100/70 p-5 rounded-3xl crayon-box-yellow flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div>
-                    <h2 class="title-font text-2xl text-indigo-900">📸 4학년 5반 추억 사진방</h2>
-                    <p class="text-sm text-indigo-700 font-bold">학교생활, 현장체험학습 등 멋진 순간을 사진으로 공유해봐요!</p>
+                    <h2 class="title-font text-2xl text-amber-950">📸 4학년 5반 실시간 추억 사진방</h2>
+                    <p class="text-base text-amber-800 font-bold">현장체험학습, 축제, 교실에서의 사진을 올리면 친구들에게 실시간 공유돼요!</p>
                 </div>
-                <button type="button" onclick="openNewPostModal()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow cursor-pointer">사진 올리기</button>
+                <button type="button" onclick="openNewPostModalWithMode('photo')" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-2xl shadow cursor-pointer">사진 올리기</button>
             </div>
 
             <div id="photoGridContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
@@ -131,20 +200,20 @@
 
     <!-- New Post Modal -->
     <div id="postModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 hidden">
-        <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] flex flex-col border-4 border-indigo-500">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-                <h3 id="modalTitle" class="title-font text-2xl text-indigo-900 flex items-center gap-2"><span>✏️</span> 새 글 작성하기</h3>
+        <div class="bg-white p-6 sm:p-8 rounded-3xl crayon-box-pink max-w-lg w-full max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between pb-3 border-b border-gray-200">
+                <h3 id="modalTitle" class="title-font text-2xl text-rose-900 flex items-center gap-2"><span>✏️</span> 새 글 작성하기</h3>
                 <button type="button" onclick="closeNewPostModal()" class="text-gray-400 hover:text-gray-600 text-3xl font-bold leading-none cursor-pointer">&times;</button>
             </div>
 
             <form id="postForm" onsubmit="handlePostSubmit(event)" class="overflow-y-auto flex-1 py-4 space-y-4 pr-1">
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">게시판 선택</label>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">게시판 선택</label>
                     <div class="grid grid-cols-2 gap-2">
-                        <label class="flex items-center justify-center gap-1 p-2.5 bg-indigo-50 rounded-xl border-2 border-indigo-200 cursor-pointer text-sm font-bold text-indigo-900">
+                        <label class="flex items-center justify-center gap-1 p-2.5 bg-rose-50 rounded-2xl border-2 border-rose-300 cursor-pointer text-sm font-bold text-rose-900">
                             <input type="radio" name="postType" value="free" checked onchange="toggleFormMode(this.value)"> 수다방 글쓰기
                         </label>
-                        <label class="flex items-center justify-center gap-1 p-2.5 bg-amber-50 rounded-xl border-2 border-amber-200 cursor-pointer text-sm font-bold text-amber-900">
+                        <label class="flex items-center justify-center gap-1 p-2.5 bg-amber-50 rounded-2xl border-2 border-amber-300 cursor-pointer text-sm font-bold text-amber-900">
                             <input type="radio" name="postType" value="photo" onchange="toggleFormMode(this.value)"> 사진방 사진 올리기
                         </label>
                     </div>
@@ -152,72 +221,102 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1">작성자 이름</label>
-                        <input type="text" id="postAuthor" placeholder="예: 김철수" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-xl bg-slate-50" required>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">작성자 (우리반 실명)</label>
+                        <select id="postAuthor" class="w-full px-3 py-2 text-base crayon-input focus:outline-none focus:ring-2 focus:ring-rose-500 bg-gray-50 font-bold" required>
+                            <option value="">이름을 선택하세요</option>
+                            <option value="전영주선생님">🌸 전영주선생님</option>
+                            <option value="강민정">강민정</option>
+                            <option value="고은혁">고은혁</option>
+                            <option value="구재이">구재이</option>
+                            <option value="김민규">김민규</option>
+                            <option value="김보윤">김보윤</option>
+                            <option value="김영훈">김영훈</option>
+                            <option value="김윤슬">김윤슬</option>
+                            <option value="노은율">노은율</option>
+                            <option value="문장우">문장우</option>
+                            <option value="박리원">박리원</option>
+                            <option value="서태희">서태희</option>
+                            <option value="오도현">오도현</option>
+                            <option value="우주하">우주하</option>
+                            <option value="이다연">이다연</option>
+                            <option value="이서준">이서준</option>
+                            <option value="이소율">이소율</option>
+                            <option value="이채은">이채은</option>
+                            <option value="임세준">임세준</option>
+                            <option value="조규원">조규원</option>
+                            <option value="조민준">조민준</option>
+                            <option value="조승우">조승우</option>
+                            <option value="조하린">조하린</option>
+                            <option value="차수연">차수연</option>
+                            <option value="최유주">최유주</option>
+                            <option value="한찬희">한찬희</option>
+                        </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1">이모지 선택</label>
-                        <select id="postSticker" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-xl bg-slate-50 font-bold">
-                            <option value="😊">😊 웃음</option>
-                            <option value="🎒">🎒 학교</option>
-                            <option value="⚽">⚽ 축구</option>
-                            <option value="⭐">⭐ 별</option>
-                            <option value="🎨">🎨 미술</option>
-                            <option value="🍕">🍕 피자</option>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">스티커 선택</label>
+                        <select id="postSticker" class="w-full px-3 py-2 text-base crayon-input focus:outline-none focus:ring-2 focus:ring-rose-500 bg-gray-50 font-bold">
+                            <option value="🌈">🌈 무지개</option>
+                            <option value="🖍️">🖍️ 크레파스</option>
+                            <option value="⭐">⭐ 반짝별</option>
+                            <option value="🎒">🎒 책가방</option>
+                            <option value="⚽">⚽ 축구공</option>
+                            <option value="🎨">🎨 팔레트</option>
+                            <option value="🍕">🍕 맛있는 간식</option>
+                            <option value="💖">💖 하트</option>
                         </select>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">제목</label>
-                    <input type="text" id="postTitle" placeholder="제목을 입력하세요..." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-xl bg-slate-50" required>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">제목</label>
+                    <input type="text" id="postTitle" placeholder="제목을 입력하세요..." class="w-full px-3 py-2 text-base crayon-input focus:outline-none focus:ring-2 focus:ring-rose-500 bg-gray-50 font-bold" required>
                 </div>
 
                 <div id="photoUploadGroup" class="hidden space-y-2">
-                    <label class="block text-sm font-bold text-amber-900">📷 사진 첨부 (휴대폰/PC 사진 선택)</label>
-                    <input type="file" id="postImageFile" accept="image/*" onchange="handleImageFileSelect(event)" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer">
+                    <label class="block text-sm font-bold text-amber-900">📷 사진 첨부 (휴대폰 앨범 또는 파일 선택시 실시간 동기화)</label>
+                    <input type="file" id="postImageFile" accept="image/*" onchange="handleImageFileSelect(event)" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer">
                     <div id="imagePreviewContainer" class="hidden mt-2">
-                        <img id="imagePreview" src="" alt="미리보기" class="w-full h-44 object-cover rounded-xl border-2 border-amber-300">
+                        <img id="imagePreview" src="" alt="미리보기" class="w-full h-48 object-cover rounded-2xl border-2 border-amber-300">
                     </div>
                 </div>
 
                 <div>
-                    <label id="contentLabel" class="block text-sm font-bold text-slate-700 mb-1">내용</label>
-                    <textarea id="postContent" rows="4" placeholder="내용을 자유롭게 적어보세요..." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-xl bg-slate-50" required></textarea>
+                    <label id="contentLabel" class="block text-sm font-bold text-gray-700 mb-1">내용</label>
+                    <textarea id="postContent" rows="4" placeholder="즐겁고 예쁜 이야기를 남겨주세요..." class="w-full px-3 py-2 text-base crayon-input focus:outline-none focus:ring-2 focus:ring-rose-500 bg-gray-50 font-bold" required></textarea>
                 </div>
             </form>
 
-            <div class="pt-3 border-t border-slate-200">
-                <button type="button" onclick="document.getElementById('postForm').requestSubmit()" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xl rounded-2xl transition-all shadow-lg cursor-pointer">
+            <div class="pt-3 border-t border-gray-200">
+                <button type="button" onclick="document.getElementById('postForm').requestSubmit()" class="w-full py-4 bg-rose-500 hover:bg-rose-600 active:scale-95 text-white font-bold text-2xl rounded-2xl crayon-box-pink transition-all shadow-xl cursor-pointer">
                     ✨ 등록하기
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Photo Lightbox Modal -->
+    <!-- Photo Lightbox Modal (사진 크게 보기 및 댓글) -->
     <div id="photoModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 hidden">
-        <div class="bg-white p-6 rounded-3xl max-w-2xl w-full relative shadow-2xl">
+        <div class="bg-white p-6 rounded-3xl max-w-2xl w-full relative crayon-box-yellow max-h-[90vh] overflow-y-auto">
             <button type="button" onclick="closePhotoModal()" class="absolute top-3 right-4 text-gray-500 hover:text-black text-3xl font-bold cursor-pointer">&times;</button>
-            <div class="overflow-hidden rounded-2xl bg-black mb-4 max-h-[60vh] flex items-center justify-center">
-                <img id="lightboxImg" src="" alt="확대 사진" class="max-h-[60vh] object-contain">
+            <div class="overflow-hidden rounded-2xl bg-black mb-4 max-h-[55vh] flex items-center justify-center">
+                <img id="lightboxImg" src="" alt="확대 사진" class="max-h-[55vh] object-contain">
             </div>
-            <h3 id="lightboxTitle" class="title-font text-2xl text-slate-900 mb-1"></h3>
-            <p id="lightboxCaption" class="text-slate-700 text-sm mb-3"></p>
-            <div class="flex items-center justify-between text-xs text-slate-500 border-t pt-2 font-bold">
+            <h3 id="lightboxTitle" class="title-font text-2xl text-amber-900 mb-1"></h3>
+            <p id="lightboxCaption" class="text-gray-700 text-base mb-3 font-bold whitespace-pre-line"></p>
+            <div class="flex items-center justify-between text-sm text-gray-500 border-t pt-2 font-bold">
                 <span id="lightboxAuthor"></span>
                 <span id="lightboxDate"></span>
             </div>
         </div>
     </div>
 
-    <!-- Warning Modal -->
+    <!-- Custom Warning Modal -->
     <div id="warningModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 hidden">
-        <div class="bg-white p-6 rounded-3xl max-w-sm w-full text-center space-y-4 shadow-xl">
+        <div class="bg-white p-6 rounded-3xl crayon-box-pink max-w-sm w-full text-center space-y-4">
             <div id="warningIcon" class="text-5xl">⚠️</div>
-            <h3 id="warningTitle" class="title-font text-2xl text-indigo-900">알림</h3>
-            <p id="warningText" class="text-slate-700 text-sm font-bold leading-relaxed"></p>
-            <button type="button" onclick="closeWarningModal()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base rounded-2xl cursor-pointer">확인</button>
+            <h3 id="warningTitle" class="title-font text-2xl text-rose-900">알림</h3>
+            <p id="warningText" class="text-gray-700 text-base font-bold leading-relaxed"></p>
+            <button type="button" onclick="closeWarningModal()" class="w-full py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold text-lg rounded-2xl crayon-box-pink cursor-pointer">확인</button>
         </div>
     </div>
 
@@ -251,7 +350,18 @@
         const db = getFirestore(app);
         const postsColRef = collection(db, "school_posts");
 
-        const BAD_WORDS = ['욕설', '바보', '시발', '개새', '지랄', '병신', '꺼져', '닥쳐', '쓰레기', '죽어'];
+        // 4학년 5반 공식 명단 (25명 + 전영주선생님)
+        const ALLOWED_MEMBERS = [
+            "전영주선생님",
+            "강민정", "고은혁", "김민규", "김보윤", "김영훈", 
+            "김윤슬", "노은율", "문장우", "박리원", "서태희", 
+            "오도현", "우주하", "이다연", "이서준", "이소율", 
+            "이채은", "임세준", "조규원", "조하린", "차수연", 
+            "최유주", "한찬희", "구재이", "조승우", "조민준"
+        ];
+
+        // 욕설 및 비방 차단 목록
+        const BAD_WORDS = ['욕설', '바보', '시발', '개새', '지랄', '병신', '꺼져', '닥쳐', '쓰레기', '죽어', '미친', '새끼', '존나', '느금', '엠창', '따돌림', '장애', '놈'];
 
         let posts = [];
         let activeTab = 'free';
@@ -273,11 +383,18 @@
             return BAD_WORDS.some(word => str.toLowerCase().includes(word));
         }
 
+        function isAllowedMember(name) {
+            if (!name) return false;
+            const cleanName = name.trim().replace(/\s+/g, '');
+            return ALLOWED_MEMBERS.some(m => m.replace(/\s+/g, '') === cleanName);
+        }
+
+        // 우리반 암호 0405 확인
         window.handleUnlock = function(e) {
             e.preventDefault();
             const val = document.getElementById('passcodeInput').value.trim();
-            if (val.length >= 4) {
-                sessionStorage.setItem('isUnlocked', 'true');
+            if (val === '0405') {
+                sessionStorage.setItem('isUnlocked_4_5', 'true');
                 document.getElementById('lockScreen').classList.add('hidden');
                 document.getElementById('appContainer').classList.remove('hidden');
             } else {
@@ -286,12 +403,13 @@
         }
 
         window.lockApp = function() {
-            sessionStorage.removeItem('isUnlocked');
+            sessionStorage.removeItem('isUnlocked_4_5');
             document.getElementById('lockScreen').classList.remove('hidden');
             document.getElementById('appContainer').classList.add('hidden');
             document.getElementById('passcodeInput').value = '';
         }
 
+        // 🔥 Firestore 실시간 데이터 리스너 (글/사진 등록시 모든 사용자에게 즉시 동기화)
         function initFirestoreListener() {
             const q = query(postsColRef, orderBy("createdAt", "desc"));
             onSnapshot(q, (snapshot) => {
@@ -308,23 +426,22 @@
 
         window.switchTab = function(tabName) {
             activeTab = tabName;
-            
             const freeBtn = document.getElementById('tabFreeBoardBtn');
             const photoBtn = document.getElementById('tabPhotoGalleryBtn');
             const freeSec = document.getElementById('sectionFreeBoard');
             const photoSec = document.getElementById('sectionPhotoGallery');
 
             [freeBtn, photoBtn].forEach(btn => {
-                btn.className = "flex-1 px-4 py-3 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-100 cursor-pointer";
+                btn.className = "flex-1 px-4 py-3 rounded-2xl font-bold text-xl transition-all flex items-center justify-center gap-2 text-amber-900 hover:bg-amber-100 cursor-pointer";
             });
 
             [freeSec, photoSec].forEach(sec => sec.classList.add('hidden'));
 
             if (tabName === 'free') {
-                freeBtn.className = "flex-1 px-4 py-3 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 bg-indigo-600 text-white shadow cursor-pointer";
+                freeBtn.className = "flex-1 px-4 py-3 rounded-2xl font-bold text-xl transition-all flex items-center justify-center gap-2 bg-rose-500 text-white shadow cursor-pointer";
                 freeSec.classList.remove('hidden');
             } else if (tabName === 'photo') {
-                photoBtn.className = "flex-1 px-4 py-3 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 bg-indigo-600 text-white shadow cursor-pointer";
+                photoBtn.className = "flex-1 px-4 py-3 rounded-2xl font-bold text-xl transition-all flex items-center justify-center gap-2 bg-amber-500 text-white shadow cursor-pointer";
                 photoSec.classList.remove('hidden');
             }
         }
@@ -344,50 +461,55 @@
 
             if (postsToRender.length === 0) {
                 container.innerHTML = `
-                    <div class="col-span-full bg-white p-8 rounded-2xl text-center text-slate-500 shadow-sm border border-slate-200">
+                    <div class="col-span-full bg-white p-8 rounded-3xl text-center text-gray-500 crayon-box-yellow">
                         <span class="text-4xl block mb-2">💬</span>
-                        아직 작성된 글이 없어요. 첫 번째 이야기를 남겨보세요!
+                        아직 올라온 이야기가 없어요. 첫 번째 이야기를 들려주세요!
                     </div>
                 `;
                 return;
             }
 
             container.innerHTML = postsToRender.map(post => `
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                <div class="bg-white p-5 sm:p-6 rounded-3xl crayon-box-yellow flex flex-col justify-between">
                     <div>
-                        <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3 mb-3">
+                        <div class="flex items-center justify-between gap-2 border-b border-amber-100 pb-3 mb-3">
                             <div class="flex items-center gap-2">
-                                <span class="text-2xl">${post.sticker || '😊'}</span>
+                                <span class="text-3xl">${post.sticker || '🌈'}</span>
                                 <div>
-                                    <h3 class="title-font text-xl text-slate-900">${escapeHtml(post.title)}</h3>
-                                    <p class="text-xs text-slate-500 font-bold">✍️ ${escapeHtml(post.author)} | 📅 ${post.date}</p>
+                                    <h3 class="title-font text-2xl text-amber-950 leading-snug">${escapeHtml(post.title)}</h3>
+                                    <p class="text-xs text-amber-800 font-bold">✍️ 작성자: <span class="text-rose-600">${escapeHtml(post.author)}</span> | 📅 ${post.date}</p>
                                 </div>
                             </div>
-                            <button type="button" onclick="deletePost('${post.id}')" class="text-slate-400 hover:text-rose-500 text-base cursor-pointer" title="삭제">🗑️</button>
+                            <button type="button" onclick="deletePost('${post.id}')" class="text-gray-400 hover:text-red-500 p-1 font-bold text-lg cursor-pointer" title="삭제">
+                                🗑️
+                            </button>
                         </div>
-                        <p class="text-slate-700 text-base leading-relaxed whitespace-pre-line mb-4">${escapeHtml(post.content)}</p>
+                        <p class="text-slate-800 text-lg leading-relaxed whitespace-pre-line mb-4 font-bold">${escapeHtml(post.content)}</p>
                     </div>
 
-                    <div class="pt-3 border-t border-slate-100">
+                    <div class="pt-3 border-t border-amber-100">
                         <div class="flex items-center justify-between mb-2">
-                            <button type="button" onclick="toggleLike('${post.id}')" class="flex items-center gap-1 px-3 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold rounded-xl cursor-pointer">
+                            <button type="button" onclick="toggleLike('${post.id}')" class="flex items-center gap-1.5 px-3 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 text-sm font-bold rounded-xl transition-colors cursor-pointer">
                                 <span>❤️</span> 좋아요 <span>${post.likes || 0}</span>
                             </button>
-                            <span class="text-xs text-slate-400 font-bold">💬 댓글 ${(post.comments || []).length}개</span>
+                            <span class="text-xs text-amber-800 font-bold">💬 댓글 ${(post.comments || []).length}개</span>
                         </div>
 
-                        <div class="space-y-1.5 bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-xs">
+                        <div class="space-y-2 bg-amber-50/60 p-3 rounded-2xl border border-amber-200">
                             ${(post.comments || []).map(c => `
-                                <div class="bg-white p-1.5 rounded border border-slate-100">
-                                    <strong class="text-indigo-800">${escapeHtml(c.author)}:</strong>
-                                    <span class="text-slate-700">${escapeHtml(c.text)}</span>
+                                <div class="bg-white p-2 rounded-xl border border-amber-200 text-sm">
+                                    <strong class="text-rose-700">${escapeHtml(c.author)}:</strong>
+                                    <span class="text-slate-800 font-bold">${escapeHtml(c.text)}</span>
                                 </div>
                             `).join('')}
 
-                            <div class="flex gap-1 pt-1">
-                                <input type="text" id="commentAuthor-${post.id}" placeholder="이름" class="w-16 px-2 py-1 rounded border border-slate-300 bg-white">
-                                <input type="text" id="commentText-${post.id}" placeholder="댓글 남기기..." class="flex-1 px-2 py-1 rounded border border-slate-300 bg-white">
-                                <button type="button" onclick="addComment('${post.id}')" class="px-2.5 py-1 bg-indigo-600 text-white font-bold rounded cursor-pointer">등록</button>
+                            <div class="flex gap-2 pt-1">
+                                <select id="commentAuthor-${post.id}" class="w-32 px-2 py-1.5 text-xs rounded-xl border border-amber-300 bg-white font-bold">
+                                    <option value="">내 이름</option>
+                                    ${ALLOWED_MEMBERS.map(m => `<option value="${m}">${m}</option>`).join('')}
+                                </select>
+                                <input type="text" id="commentText-${post.id}" placeholder="따뜻한 댓글을 남겨주세요..." class="flex-1 px-3 py-1.5 text-xs rounded-xl border border-amber-300 bg-white font-bold">
+                                <button type="button" onclick="addComment('${post.id}')" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-xl cursor-pointer">등록</button>
                             </div>
                         </div>
                     </div>
@@ -395,6 +517,7 @@
             `).join('');
         }
 
+        // 실시간 사진 갤러리 렌더링
         function renderPhotoGallery() {
             const container = document.getElementById('photoGridContainer');
             const photoPosts = posts.filter(p => p.type === 'photo');
@@ -404,9 +527,9 @@
 
             if (photoPosts.length === 0) {
                 container.innerHTML = `
-                    <div class="col-span-full bg-white p-8 rounded-2xl text-center text-slate-500 shadow-sm border border-slate-200">
+                    <div class="col-span-full bg-white p-8 rounded-3xl text-center text-gray-500 crayon-box-yellow">
                         <span class="text-4xl block mb-2">📸</span>
-                        아직 공유된 사진이 없어요! 추억 사진을 올려보세요.
+                        아직 등록된 사진이 없어요! 우리반 추억 사진을 실시간으로 공유해보세요!
                     </div>
                 `;
                 return;
@@ -416,27 +539,47 @@
                 <div class="polaroid relative flex flex-col justify-between">
                     <div class="washi-tape"></div>
                     <div class="cursor-pointer" onclick="openPhotoModal('${escapeHtml(post.photoUrl)}', '${escapeHtml(post.title)}', '${escapeHtml(post.content)}', '${escapeHtml(post.author)}', '${post.date}')">
-                        <div class="overflow-hidden rounded-lg bg-slate-100 aspect-video mb-3">
+                        <div class="overflow-hidden rounded-xl bg-gray-100 aspect-video mb-3">
                             <img src="${escapeHtml(post.photoUrl)}" alt="${escapeHtml(post.title)}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
                         </div>
-                        <h4 class="title-font text-lg text-slate-900 truncate">${escapeHtml(post.title)}</h4>
-                        <p class="text-xs text-slate-600 line-clamp-2 mb-2">${escapeHtml(post.content)}</p>
+                        <div class="flex items-center justify-between gap-1 mb-1">
+                            <h4 class="title-font text-xl text-amber-950 truncate">${escapeHtml(post.title)}</h4>
+                            <span class="text-xl">${post.sticker || '📸'}</span>
+                        </div>
+                        <p class="text-sm text-slate-700 line-clamp-2 mb-2 font-bold">${escapeHtml(post.content)}</p>
                     </div>
 
-                    <div class="pt-2 border-t border-slate-100">
-                        <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
-                            <span class="font-bold text-indigo-700">✍️ ${escapeHtml(post.author)}</span>
-                            <button type="button" onclick="deletePost('${post.id}')" class="text-slate-400 hover:text-rose-500 cursor-pointer">🗑️</button>
+                    <div class="pt-2 border-t border-amber-200">
+                        <div class="flex items-center justify-between text-xs text-gray-500 mb-2">
+                            <span class="font-bold text-rose-700">✍️ ${escapeHtml(post.author)}</span>
+                            <button type="button" onclick="deletePost('${post.id}')" class="text-gray-400 hover:text-red-500 p-1 font-bold text-base cursor-pointer" title="삭제">
+                                🗑️
+                            </button>
                         </div>
                         <div class="flex items-center justify-between">
-                            <button type="button" onclick="toggleLike('${post.id}')" class="flex items-center gap-1 text-xs px-2 py-0.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-lg cursor-pointer">
+                            <button type="button" onclick="toggleLike('${post.id}')" class="flex items-center gap-1 text-xs px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-lg cursor-pointer">
                                 <span>❤️</span> ${post.likes || 0}
                             </button>
-                            <span class="text-xs text-slate-400">${post.date}</span>
+                            <span class="text-xs text-gray-400 font-bold">📅 ${post.date}</span>
                         </div>
                     </div>
                 </div>
             `).join('');
+        }
+
+        window.filterFreePosts = function() {
+            const query = document.getElementById('freeSearchInput').value.toLowerCase().trim();
+            const freePosts = posts.filter(p => p.type === 'free');
+            if (!query) {
+                renderFreePosts(freePosts);
+                return;
+            }
+            const filtered = freePosts.filter(p => 
+                p.title.toLowerCase().includes(query) || 
+                p.content.toLowerCase().includes(query) || 
+                p.author.toLowerCase().includes(query)
+            );
+            renderFreePosts(filtered);
         }
 
         window.toggleLike = async function(id) {
@@ -446,7 +589,7 @@
                     const docRef = doc(db, "school_posts", id);
                     await updateDoc(docRef, { likes: (post.likes || 0) + 1 });
                 } catch (e) {
-                    console.error("좋아요 에러:", e);
+                    console.error("좋아요 업데이트 에러:", e);
                 }
             }
         }
@@ -460,12 +603,17 @@
             const text = textInput.value.trim();
 
             if (!author || !text) {
-                showWarningModal('입력 오류', '이름과 댓글 내용을 모두 입력해주세요!');
+                showWarningModal('입력 확인', '작성자 이름과 댓글 내용을 모두 입력해주세요!', '✍️');
                 return;
             }
 
-            if (containsBadWords(author) || containsBadWords(text)) {
-                showWarningModal('사용 제한', '바른 말을 사용해 주세요! 부적절한 단어가 포함되어 있습니다.');
+            if (!isAllowedMember(author)) {
+                showWarningModal('작성 제한', '4학년 5반 친구들과 선생님만 작성할 수 있어요!', '🚫');
+                return;
+            }
+
+            if (containsBadWords(text)) {
+                showWarningModal('사용 제한', '바르고 고운 말을 사용해 주세요! 부적절한 단어가 포함되어 있습니다.', '🚫');
                 return;
             }
 
@@ -478,13 +626,13 @@
                     authorInput.value = '';
                     textInput.value = '';
                 } catch (e) {
-                    console.error("댓글 에러:", e);
+                    console.error("댓글 등록 에러:", e);
                 }
             }
         }
 
         window.deletePost = async function(id) {
-            if (!confirm("정말 이 글을 삭제하시겠습니까?")) return;
+            if (!confirm("정말 이 글(사진)을 삭제하시겠습니까?")) return;
             try {
                 const docRef = doc(db, "school_posts", id);
                 await deleteDoc(docRef);
@@ -502,6 +650,14 @@
             });
         }
 
+        window.openNewPostModalWithMode = function(mode) {
+            document.getElementById('postModal').classList.remove('hidden');
+            toggleFormMode(mode);
+            document.querySelectorAll('input[name="postType"]').forEach(r => {
+                r.checked = (r.value === mode);
+            });
+        }
+
         window.closeNewPostModal = function() {
             document.getElementById('postModal').classList.add('hidden');
             document.getElementById('postForm').reset();
@@ -512,16 +668,20 @@
         window.toggleFormMode = function(mode) {
             const photoGroup = document.getElementById('photoUploadGroup');
             const modalTitle = document.getElementById('modalTitle');
+            const contentLabel = document.getElementById('contentLabel');
+
             if (mode === 'photo') {
                 photoGroup.classList.remove('hidden');
-                modalTitle.innerHTML = '<span>📸</span> 추억 사진 올리기';
+                modalTitle.innerHTML = '<span>📸</span> 실시간 추억 사진 올리기';
+                contentLabel.innerText = '사진 설명 / 이야기';
             } else {
                 photoGroup.classList.add('hidden');
                 modalTitle.innerHTML = '<span>✏️</span> 수다방 글쓰기';
+                contentLabel.innerText = '내용';
             }
         }
 
-        // 사진 자동 압축 엔진
+        // 🔥 고화질 스마트폰 사진 자동 압축 엔진 (실시간 Firestore 업로드 지원)
         window.handleImageFileSelect = function(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -531,7 +691,7 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_SIZE = 900;
+                    const MAX_SIZE = 950;
                     let width = img.width;
                     let height = img.height;
 
@@ -546,7 +706,8 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    currentPhotoData = canvas.toDataURL('image/jpeg', 0.7);
+                    // 0.75 퀄리티 압축 (약 100~250KB로 최적화되어 실시간 공유)
+                    currentPhotoData = canvas.toDataURL('image/jpeg', 0.75);
                     const previewImg = document.getElementById('imagePreview');
                     previewImg.src = currentPhotoData;
                     document.getElementById('imagePreviewContainer').classList.remove('hidden');
@@ -558,6 +719,7 @@
 
         window.handlePostSubmit = async function(e) {
             e.preventDefault();
+
             const postTypeInput = document.querySelector('input[name="postType"]:checked');
             const postType = postTypeInput ? postTypeInput.value : activeTab;
             const author = document.getElementById('postAuthor').value.trim();
@@ -566,18 +728,23 @@
             const content = document.getElementById('postContent').value.trim();
 
             if (!author || !title || !content) {
-                showWarningModal('입력 확인', '작성자, 제목, 내용을 모두 입력해주세요!');
+                showWarningModal('입력 확인', '작성자 이름, 제목, 내용을 모두 입력해주세요!', '✍️');
                 return;
             }
 
-            if (containsBadWords(author) || containsBadWords(title) || containsBadWords(content)) {
-                showWarningModal('사용 제한', '바른 말을 사용해 주세요! 부적절한 단어가 포함되어 있습니다.');
+            if (!isAllowedMember(author)) {
+                showWarningModal('작성 제한', '4학년 5반 친구들과 선생님 이름으로만 작성할 수 있습니다!', '🚫');
+                return;
+            }
+
+            if (containsBadWords(title) || containsBadWords(content)) {
+                showWarningModal('사용 제한', '바르고 고운 말을 사용해 주세요! 부적절한 단어가 포함되어 있습니다.', '🚫');
                 return;
             }
 
             let finalPhotoUrl = currentPhotoData;
             if (postType === 'photo' && !finalPhotoUrl) {
-                showWarningModal('사진 필요', '사진방에 올릴 사진을 선택해주세요!');
+                showWarningModal('사진 필요', '사진방에는 올릴 사진을 반드시 첨부해 주세요!', '📸');
                 return;
             }
 
@@ -602,8 +769,8 @@
                 closeNewPostModal();
                 switchTab(postType);
             } catch (e) {
-                console.error("저장 에러:", e);
-                showWarningModal('저장 오류', '데이터 저장 중 오류가 발생했습니다. (Firestore 보안 규칙을 확인해주세요)');
+                console.error("글 저장 에러:", e);
+                showWarningModal('저장 오류', '글 또는 사진을 저장하는 중 오류가 발생했습니다. (Firestore 보안 규칙을 확인해주세요)', '❌');
             }
         }
 
@@ -611,7 +778,7 @@
             document.getElementById('lightboxImg').src = url;
             document.getElementById('lightboxTitle').innerText = title;
             document.getElementById('lightboxCaption').innerText = caption;
-            document.getElementById('lightboxAuthor').innerText = `✍️ ${author}`;
+            document.getElementById('lightboxAuthor').innerText = `📷 작성자: ${author}`;
             document.getElementById('lightboxDate').innerText = `📅 ${date}`;
             document.getElementById('photoModal').classList.remove('hidden');
         }
@@ -626,7 +793,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            if (sessionStorage.getItem('isUnlocked') === 'true') {
+            if (sessionStorage.getItem('isUnlocked_4_5') === 'true') {
                 document.getElementById('lockScreen').classList.add('hidden');
                 document.getElementById('appContainer').classList.remove('hidden');
             } else {
