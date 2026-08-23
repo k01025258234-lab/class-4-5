@@ -7,147 +7,158 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts (Gaegu, Jua, Dongle) -->
-    <link href="https://fonts.googleapis.com/css2?family=Dongle:wght@700&family=Gaegu:wght@400;700&family=Jua&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Jua&display=swap" rel="stylesheet">
     <style>
+        /* 🖍️ 전체 스케치북 모눈종이 배경 */
         body {
             font-family: 'Gaegu', cursive;
             background-color: #fefce8;
             background-image: 
-                radial-gradient(#fde047 2px, transparent 2px),
-                radial-gradient(#fbcfe8 1.5px, transparent 1.5px);
-            background-size: 32px 32px, 24px 24px;
-            background-position: 0 0, 16px 16px;
+                linear-gradient(#fef08a 1.5px, transparent 1.5px),
+                linear-gradient(90deg, #fef08a 1.5px, transparent 1.5px);
+            background-size: 26px 26px;
             font-size: 1.35rem;
             color: #451a03;
         }
         .title-font {
             font-family: 'Jua', sans-serif;
-        }
-        .cute-font {
-            font-family: 'Dongle', sans-serif;
+            letter-spacing: -0.5px;
         }
 
-        /* 🖍️ 삐뚤빼뚤 진짜 크레파스 손그림 테두리 효과 */
-        .crayon-pink {
-            border: 4px solid #fb7185;
-            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
-            box-shadow: 4px 6px 0px #f43f5e;
-            background: #fff1f2;
+        /* 🖍️ SVG 필터를 통한 울퉁불퉁 진짜 크레파스 테두리 */
+        .crayon-stroke {
+            filter: url(#crayon-rough);
         }
-        .crayon-yellow {
-            border: 4px solid #f59e0b;
-            border-radius: 20px 255px 20px 240px/240px 20px 255px 20px;
-            box-shadow: 5px 6px 0px #d97706;
-            background: #fefce8;
+
+        .crayon-box-yellow {
+            background-color: #fffef2;
+            border: 5px solid #f59e0b;
+            border-radius: 255px 25px 225px 25px/25px 225px 25px 255px;
+            box-shadow: 6px 8px 0px #d97706;
         }
-        .crayon-blue {
-            border: 4px solid #38bdf8;
+        .crayon-box-pink {
+            background-color: #fff1f2;
+            border: 5px solid #f43f5e;
+            border-radius: 25px 255px 25px 225px/225px 25px 255px 25px;
+            box-shadow: 6px 8px 0px #e11d48;
+        }
+        .crayon-box-blue {
+            background-color: #f0f9ff;
+            border: 5px solid #0284c7;
             border-radius: 255px 20px 220px 20px/20px 220px 20px 255px;
-            box-shadow: 4px 6px 0px #0284c7;
-            background: #f0f9ff;
+            box-shadow: 6px 8px 0px #0369a1;
         }
-        .crayon-green {
-            border: 4px solid #4ade80;
-            border-radius: 220px 18px 255px 18px/18px 255px 18px 220px;
-            box-shadow: 4px 6px 0px #16a34a;
-            background: #f0fdf4;
+        .crayon-box-green {
+            background-color: #f0fdf4;
+            border: 5px solid #16a34a;
+            border-radius: 220px 25px 255px 25px/25px 255px 25px 220px;
+            box-shadow: 6px 8px 0px #15803d;
         }
-        .crayon-purple {
-            border: 4px solid #c084fc;
-            border-radius: 240px 20px 230px 20px/20px 240px 20px 230px;
-            box-shadow: 4px 6px 0px #9333ea;
-            background: #faf5ff;
+        .crayon-box-purple {
+            background-color: #faf5ff;
+            border: 5px solid #9333ea;
+            border-radius: 240px 25px 230px 25px/25px 240px 25px 230px;
+            box-shadow: 6px 8px 0px #7e22ce;
         }
+
         .crayon-input {
-            border: 3px solid #fbbf24;
+            border: 4px solid #f59e0b;
             border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
             background-color: #ffffff;
         }
 
-        /* 📸 귀여운 스케치북 폴라로이드 사진 */
+        /* 📸 손그림 폴라로이드 사진 테두리 */
         .crayon-polaroid {
             background: #ffffff;
             padding: 1.2rem 1.2rem 2.2rem 1.2rem;
-            border: 4px solid #facc15;
-            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
-            box-shadow: 5px 8px 0px #eab308;
+            border: 5px solid #eab308;
+            border-radius: 255px 20px 225px 20px/20px 225px 20px 255px;
+            box-shadow: 7px 9px 0px #ca8a04;
             transform: rotate(-1.5deg);
-            transition: transform 0.25s, box-shadow 0.25s;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .crayon-polaroid:nth-child(even) {
-            transform: rotate(1.8deg);
-            border-color: #f472b6;
-            box-shadow: 5px 8px 0px #db2777;
+            transform: rotate(2deg);
+            border-color: #f43f5e;
+            box-shadow: 7px 9px 0px #e11d48;
         }
         .crayon-polaroid:nth-child(3n) {
-            transform: rotate(-1deg);
-            border-color: #38bdf8;
-            box-shadow: 5px 8px 0px #0284c7;
+            transform: rotate(-2deg);
+            border-color: #0284c7;
+            box-shadow: 7px 9px 0px #0369a1;
         }
         .crayon-polaroid:hover {
             transform: scale(1.03) rotate(0deg);
-            box-shadow: 8px 12px 0px #f59e0b;
+            box-shadow: 10px 14px 0px #b45309;
         }
 
-        /* 귀여운 마스킹 테이프 */
+        /* 🏷️ 찢어진 마스킹 테이프 효과 */
         .washi-tape-pink {
             position: absolute;
-            top: -14px;
+            top: -15px;
             left: 50%;
             transform: translateX(-50%) rotate(-2deg);
-            width: 100px;
-            height: 26px;
-            background: rgba(251, 113, 133, 0.85);
+            width: 110px;
+            height: 28px;
+            background: rgba(251, 113, 133, 0.9);
             border: 2px dashed #e11d48;
-            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .washi-tape-yellow {
             position: absolute;
-            top: -14px;
+            top: -15px;
             left: 50%;
             transform: translateX(-50%) rotate(2deg);
-            width: 100px;
-            height: 26px;
-            background: rgba(253, 224, 71, 0.85);
+            width: 110px;
+            height: 28px;
+            background: rgba(253, 224, 71, 0.9);
             border: 2px dashed #ca8a04;
-            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        /* 공책 줄 질감 */
-        .notebook-line {
-            background: repeating-linear-gradient(#ffffff, #ffffff 31px, #fed7aa 32px);
+        /* 공책 줄무늬 노트 */
+        .notebook-paper {
+            background: repeating-linear-gradient(#ffffff, #ffffff 32px, #fed7aa 34px);
         }
 
-        /* 알록달록 반 친구들 이름 칩 */
-        .tag-rainbow:nth-child(5n+1) { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
-        .tag-rainbow:nth-child(5n+2) { background: #fef3c7; color: #b45309; border-color: #fcd34d; }
-        .tag-rainbow:nth-child(5n+3) { background: #dcfce7; color: #15803d; border-color: #86efac; }
-        .tag-rainbow:nth-child(5n+4) { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
-        .tag-rainbow:nth-child(5n+5) { background: #f3e8ff; color: #7e22ce; border-color: #d8b4fe; }
+        /* 알록달록 무지개 이름표 */
+        .tag-rainbow:nth-child(5n+1) { background: #fee2e2; color: #b91c1c; border: 2px solid #f87171; }
+        .tag-rainbow:nth-child(5n+2) { background: #fef3c7; color: #b45309; border: 2px solid #fbbf24; }
+        .tag-rainbow:nth-child(5n+3) { background: #dcfce7; color: #15803d; border: 2px solid #4ade80; }
+        .tag-rainbow:nth-child(5n+4) { background: #e0f2fe; color: #0369a1; border: 2px solid #38bdf8; }
+        .tag-rainbow:nth-child(5n+5) { background: #f3e8ff; color: #7e22ce; border: 2px solid #c084fc; }
     </style>
 </head>
 <body class="min-h-screen text-slate-800 pb-16">
 
+    <!-- 🖍️ 크레파스 질감 렌더링용 SVG 필터 -->
+    <svg class="hidden" width="0" height="0">
+        <filter id="crayon-rough">
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+    </svg>
+
     <!-- Passcode Lock Screen (암호 0405) -->
     <div id="lockScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-amber-950/85 backdrop-blur-sm p-4">
-        <div class="bg-[#fffbeb] p-8 rounded-3xl crayon-pink max-w-md w-full text-center relative">
+        <div class="crayon-stroke crayon-box-pink p-8 sm:p-10 max-w-md w-full text-center relative">
             <div class="washi-tape-yellow"></div>
-            <div class="w-24 h-24 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-3 text-5xl animate-bounce border-3 border-rose-400">
+            <div class="w-24 h-24 bg-rose-200 rounded-full flex items-center justify-center mx-auto mb-3 text-5xl animate-bounce border-4 border-rose-500">
                 🖍️
             </div>
             <h1 class="title-font text-3xl sm:text-4xl text-rose-600 mb-1">4학년 5반 추억보관소</h1>
-            <p class="text-amber-900 font-bold mb-5 text-lg">우리들만의 비밀 암호(4자리)를 눌러줘!</p>
+            <p class="text-amber-950 font-bold mb-6 text-xl">비밀 암호 4자리를 꾹꾹 눌러줘!</p>
             
-            <form onsubmit="handleUnlock(event)" class="space-y-4">
+            <form onsubmit="handleUnlock(event)" class="space-y-5">
                 <div>
                     <input type="password" id="passcodeInput" placeholder="암호 4자리" maxlength="4" 
-                        class="w-full px-4 py-3 text-center text-3xl tracking-widest crayon-input focus:outline-none focus:ring-4 focus:ring-rose-300 font-bold text-rose-600 bg-white" required>
+                        class="crayon-stroke crayon-input w-full px-4 py-3.5 text-center text-3xl tracking-widest focus:outline-none focus:ring-4 focus:ring-rose-300 font-bold text-rose-600" required>
                 </div>
-                <button type="submit" class="w-full py-4 bg-rose-400 hover:bg-rose-500 active:scale-95 text-white font-bold text-2xl crayon-pink transition-all cursor-pointer shadow-lg">
-                    ✨ 스케치북 열기 ✨
+                <button type="submit" class="crayon-stroke w-full py-4 bg-rose-500 hover:bg-rose-600 active:scale-95 text-white font-bold text-3xl rounded-3xl transition-all cursor-pointer shadow-lg border-4 border-rose-700">
+                    ✨ 도화지 열기 ✨
                 </button>
             </form>
-            <p id="lockError" class="text-rose-600 text-base mt-3 font-bold hidden animate-pulse">삐빅! 암호가 틀렸어요 🙈 (힌트: 0405)</p>
+            <p id="lockError" class="text-rose-600 text-lg mt-4 font-bold hidden animate-pulse">앗! 암호가 틀렸어요 🙈 (힌트: 0405)</p>
         </div>
     </div>
 
@@ -155,85 +166,85 @@
     <div id="appContainer" class="hidden max-w-5xl mx-auto px-4 py-6">
         
         <!-- Header Banner -->
-        <header class="crayon-yellow p-6 sm:p-8 text-amber-950 mb-7 relative overflow-hidden">
+        <header class="crayon-stroke crayon-box-yellow p-6 sm:p-8 text-amber-950 mb-8 relative">
             <div class="washi-tape-pink"></div>
             
             <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left mb-6">
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-4">
                     <span class="text-6xl sm:text-7xl animate-pulse">🎨</span>
                     <div>
-                        <div class="flex items-center justify-center md:justify-start gap-2 mb-1">
-                            <span class="px-3 py-0.5 bg-rose-400 text-white rounded-full text-sm font-bold shadow-sm">🌈 꿈과 끼가 자라는</span>
-                            <span class="px-3 py-0.5 bg-sky-400 text-white rounded-full text-sm font-bold shadow-sm">🖍️ 4-5 알록달록</span>
+                        <div class="flex items-center justify-center md:justify-start gap-2 mb-1.5">
+                            <span class="px-3 py-1 bg-rose-500 text-white rounded-2xl text-base font-bold shadow border-2 border-rose-600">🌈 꿈을 그리는</span>
+                            <span class="px-3 py-1 bg-amber-500 text-white rounded-2xl text-base font-bold shadow border-2 border-amber-600">🖍️ 4학년 5반</span>
                         </div>
-                        <h1 class="title-font text-4xl sm:text-5xl text-amber-900 drop-shadow-sm">4학년 5반 추억보관소</h1>
-                        <p class="text-lg sm:text-xl text-amber-800 font-bold mt-1">도란도란 이야기 나누고 추억 사진을 모으는 우리반 공간 💛</p>
+                        <h1 class="title-font text-4xl sm:text-5xl text-amber-950">4학년 5반 추억보관소</h1>
+                        <p class="text-xl text-amber-900 font-bold mt-1">우리들의 빛나는 하루와 추억을 담는 스케치북 💛</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button type="button" onclick="openNewPostModal()" class="px-6 py-4 bg-rose-400 hover:bg-rose-500 active:scale-95 text-white font-bold text-2xl crayon-pink transition-all flex items-center gap-2 shadow-xl cursor-pointer">
+                    <button type="button" onclick="openNewPostModal()" class="crayon-stroke px-6 py-4 bg-rose-500 hover:bg-rose-600 active:scale-95 text-white font-bold text-2xl rounded-3xl transition-all flex items-center gap-2 shadow-xl cursor-pointer border-4 border-rose-700">
                         <span>🖍️</span> 새 글/사진 쓰기
                     </button>
-                    <button type="button" onclick="lockApp()" class="px-4 py-3.5 bg-amber-700/80 hover:bg-amber-800 text-white rounded-2xl font-bold text-base cursor-pointer shadow" title="잠금">
+                    <button type="button" onclick="lockApp()" class="px-4 py-3.5 bg-amber-800 hover:bg-amber-900 text-white rounded-2xl font-bold text-base cursor-pointer shadow" title="잠금">
                         🔒
                     </button>
                 </div>
             </div>
 
             <!-- Class Members Tag Banner -->
-            <div class="bg-white/85 backdrop-blur-sm p-4 sm:p-5 rounded-3xl border-3 border-amber-300 shadow-inner">
-                <div class="flex items-center justify-center md:justify-start gap-2 mb-3 text-amber-950 font-bold text-lg">
+            <div class="bg-white/90 p-5 rounded-3xl border-4 border-amber-400 shadow-inner">
+                <div class="flex items-center justify-center md:justify-start gap-2 mb-3 text-amber-950 font-bold text-xl">
                     <span>🌟</span> <span>4학년 5반 크레파스 친구들 명단 (총 26명)</span>
                 </div>
-                <div class="flex flex-wrap justify-center md:justify-start gap-2 font-bold text-base">
-                    <span class="px-3 py-1 bg-rose-400 text-white rounded-2xl border-2 border-rose-500 shadow-sm">🌸 전영주선생님</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">강민정</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">고은혁</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">구재이</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">김민규</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">김보윤</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">김영훈</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">김윤슬</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">노은율</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">문장우</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">박리원</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">서태희</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">오도현</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">우주하</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">이다연</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">이서준</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">이소율</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">이채은</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">임세준</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">조규원</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">조민준</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">조승우</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">조하린</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">차수연</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">최유주</span>
-                    <span class="tag-rainbow px-3 py-1 rounded-2xl border-2 shadow-sm">한찬희</span>
+                <div class="flex flex-wrap justify-center md:justify-start gap-2 font-bold text-base sm:text-lg">
+                    <span class="px-3.5 py-1 bg-rose-500 text-white rounded-2xl border-2 border-rose-700 shadow">🌸 전영주선생님</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">강민정</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">고은혁</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">구재이</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">김민규</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">김보윤</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">김영훈</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">김윤슬</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">노은율</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">문장우</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">박리원</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">서태희</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">오도현</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">우주하</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">이다연</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">이서준</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">이소율</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">이채은</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">임세준</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">조규원</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">조민준</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">조승우</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">조하린</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">차수연</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">최유주</span>
+                    <span class="tag-rainbow px-3 py-1 rounded-2xl shadow-sm">한찬희</span>
                 </div>
             </div>
         </header>
 
         <!-- Navigation Tabs -->
-        <div class="flex gap-4 mb-7 p-2">
-            <button type="button" id="tabFreeBoardBtn" onclick="switchTab('free')" class="flex-1 py-3.5 px-4 font-bold text-2xl transition-all flex items-center justify-center gap-2 crayon-pink text-rose-950 shadow-md cursor-pointer">
+        <div class="flex gap-4 mb-8">
+            <button type="button" id="tabFreeBoardBtn" onclick="switchTab('free')" class="crayon-stroke flex-1 py-4 px-4 font-bold text-2xl sm:text-3xl transition-all flex items-center justify-center gap-2 crayon-box-pink text-rose-950 shadow-md cursor-pointer">
                 <span>💬</span> 이야기 수다방 (<span id="freePostCount">0</span>)
             </button>
-            <button type="button" id="tabPhotoGalleryBtn" onclick="switchTab('photo')" class="flex-1 py-3.5 px-4 font-bold text-2xl transition-all flex items-center justify-center gap-2 bg-white/80 border-3 border-amber-300 rounded-3xl text-amber-900 hover:bg-amber-100 cursor-pointer">
+            <button type="button" id="tabPhotoGalleryBtn" onclick="switchTab('photo')" class="crayon-stroke flex-1 py-4 px-4 font-bold text-2xl sm:text-3xl transition-all flex items-center justify-center gap-2 bg-white border-4 border-amber-300 rounded-3xl text-amber-900 hover:bg-amber-50 cursor-pointer">
                 <span>📸</span> 알록달록 사진방 (<span id="photoPostCount">0</span>)
             </button>
         </div>
 
         <!-- TAB 1: Free Board -->
         <section id="sectionFreeBoard" class="space-y-6">
-            <div class="crayon-blue p-4 sm:p-5 flex flex-col sm:flex-row gap-3 items-center justify-between">
+            <div class="crayon-stroke crayon-box-blue p-5 flex flex-col sm:flex-row gap-3 items-center justify-between">
                 <div class="flex items-center gap-2 w-full sm:w-auto">
                     <span class="text-3xl">🔍</span>
-                    <input type="text" id="freeSearchInput" oninput="filterFreePosts()" placeholder="친구 이름이나 이야기 검색..." class="w-full sm:w-72 px-4 py-2 crayon-input focus:outline-none focus:ring-4 focus:ring-sky-200 text-lg font-bold text-sky-950">
+                    <input type="text" id="freeSearchInput" oninput="filterFreePosts()" placeholder="친구 이름이나 이야기 검색..." class="w-full sm:w-80 px-4 py-2.5 crayon-input focus:outline-none focus:ring-4 focus:ring-sky-200 text-xl font-bold text-sky-950">
                 </div>
-                <div class="text-base sm:text-lg font-bold text-sky-800 text-center sm:text-right">
+                <div class="text-lg sm:text-xl font-bold text-sky-900 text-center sm:text-right">
                     ✨ 고운 말, 따뜻한 마음으로 친구를 응원해요! 💛
                 </div>
             </div>
@@ -243,39 +254,39 @@
 
         <!-- TAB 2: Photo Gallery (실시간 공유) -->
         <section id="sectionPhotoGallery" class="space-y-6 hidden">
-            <div class="crayon-purple p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="crayon-stroke crayon-box-purple p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div>
                     <h2 class="title-font text-3xl text-purple-950">📸 4학년 5반 추억 사진관</h2>
-                    <p class="text-lg text-purple-800 font-bold">우리반의 빛나는 순간들을 사진으로 올려서 실시간으로 함께 봐요!</p>
+                    <p class="text-xl text-purple-900 font-bold">우리반의 빛나는 순간들을 사진으로 올려서 실시간으로 함께 봐요!</p>
                 </div>
-                <button type="button" onclick="openNewPostModalWithMode('photo')" class="px-6 py-3 bg-purple-500 hover:bg-purple-600 active:scale-95 text-white font-bold text-xl rounded-2xl crayon-purple transition-all shadow-md cursor-pointer">
+                <button type="button" onclick="openNewPostModalWithMode('photo')" class="crayon-stroke px-6 py-3.5 bg-purple-600 hover:bg-purple-700 active:scale-95 text-white font-bold text-2xl rounded-3xl transition-all shadow-md cursor-pointer border-4 border-purple-800">
                     📷 사진 올리기
                 </button>
             </div>
 
-            <div id="photoGridContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-7"></div>
+            <div id="photoGridContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8"></div>
         </section>
 
     </div>
 
     <!-- New Post Modal -->
     <div id="postModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 hidden">
-        <div class="bg-[#fffdf0] p-6 sm:p-8 rounded-3xl crayon-pink max-w-lg w-full max-h-[90vh] flex flex-col relative shadow-2xl">
+        <div class="crayon-stroke crayon-box-pink p-6 sm:p-8 max-w-lg w-full max-h-[90vh] flex flex-col relative shadow-2xl">
             <div class="washi-tape-yellow"></div>
             
-            <div class="flex items-center justify-between pb-3 border-b-3 border-rose-200">
+            <div class="flex items-center justify-between pb-3 border-b-4 border-rose-300">
                 <h3 id="modalTitle" class="title-font text-3xl text-rose-600 flex items-center gap-2"><span>✏️</span> 새 글 작성하기</h3>
                 <button type="button" onclick="closeNewPostModal()" class="text-rose-400 hover:text-rose-600 text-4xl font-bold leading-none cursor-pointer">&times;</button>
             </div>
 
             <form id="postForm" onsubmit="handlePostSubmit(event)" class="overflow-y-auto flex-1 py-4 space-y-4 pr-1">
                 <div>
-                    <label class="block text-base font-bold text-amber-950 mb-1">📌 게시판 고르기</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <label class="flex items-center justify-center gap-1.5 p-3 bg-rose-100 rounded-2xl border-3 border-rose-300 cursor-pointer text-base font-bold text-rose-900">
+                    <label class="block text-lg font-bold text-amber-950 mb-1">📌 게시판 고르기</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="flex items-center justify-center gap-1.5 p-3 bg-rose-100 rounded-2xl border-3 border-rose-300 cursor-pointer text-lg font-bold text-rose-900">
                             <input type="radio" name="postType" value="free" checked onchange="toggleFormMode(this.value)"> 💬 수다방 글쓰기
                         </label>
-                        <label class="flex items-center justify-center gap-1.5 p-3 bg-purple-100 rounded-2xl border-3 border-purple-300 cursor-pointer text-base font-bold text-purple-900">
+                        <label class="flex items-center justify-center gap-1.5 p-3 bg-purple-100 rounded-2xl border-3 border-purple-300 cursor-pointer text-lg font-bold text-purple-900">
                             <input type="radio" name="postType" value="photo" onchange="toggleFormMode(this.value)"> 📸 사진방 사진 올리기
                         </label>
                     </div>
@@ -283,8 +294,8 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-base font-bold text-amber-950 mb-1">✍️ 작성자 (우리반 실명)</label>
-                        <select id="postAuthor" class="w-full px-3 py-2.5 text-lg crayon-input focus:outline-none focus:ring-4 focus:ring-rose-200 bg-white font-bold text-slate-800" required>
+                        <label class="block text-lg font-bold text-amber-950 mb-1">✍️ 작성자 (우리반 실명)</label>
+                        <select id="postAuthor" class="crayon-input w-full px-3 py-2.5 text-lg focus:outline-none focus:ring-4 focus:ring-rose-200 font-bold text-slate-800" required>
                             <option value="">이름을 골라주세요</option>
                             <option value="전영주선생님">🌸 전영주선생님</option>
                             <option value="강민정">강민정</option>
@@ -315,8 +326,8 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-base font-bold text-amber-950 mb-1">🎨 기분 스티커</label>
-                        <select id="postSticker" class="w-full px-3 py-2.5 text-lg crayon-input focus:outline-none focus:ring-4 focus:ring-rose-200 bg-white font-bold text-slate-800">
+                        <label class="block text-lg font-bold text-amber-950 mb-1">🎨 기분 스티커</label>
+                        <select id="postSticker" class="crayon-input w-full px-3 py-2.5 text-lg focus:outline-none focus:ring-4 focus:ring-rose-200 font-bold text-slate-800">
                             <option value="🌈">🌈 알록달록 무지개</option>
                             <option value="🖍️">🖍️ 재미있는 크레파스</option>
                             <option value="⭐">⭐ 반짝반짝 별</option>
@@ -330,26 +341,26 @@
                 </div>
 
                 <div>
-                    <label class="block text-base font-bold text-amber-950 mb-1">📝 제목</label>
-                    <input type="text" id="postTitle" placeholder="제목을 예쁘게 적어봐요..." class="w-full px-4 py-2.5 text-lg crayon-input focus:outline-none focus:ring-4 focus:ring-rose-200 font-bold bg-white" required>
+                    <label class="block text-lg font-bold text-amber-950 mb-1">📝 제목</label>
+                    <input type="text" id="postTitle" placeholder="제목을 예쁘게 적어봐요..." class="crayon-input w-full px-4 py-2.5 text-lg focus:outline-none focus:ring-4 focus:ring-rose-200 font-bold" required>
                 </div>
 
                 <div id="photoUploadGroup" class="hidden space-y-2">
-                    <label class="block text-base font-bold text-purple-950">📷 사진 첨부 (휴대폰 앨범 또는 파일 선택)</label>
-                    <input type="file" id="postImageFile" accept="image/*" onchange="handleImageFileSelect(event)" class="w-full text-base text-gray-500 file:mr-4 file:py-2.5 file:px-5 file:rounded-2xl file:border-2 file:border-purple-300 file:text-base file:font-bold file:bg-purple-100 file:text-purple-900 hover:file:bg-purple-200 cursor-pointer">
+                    <label class="block text-lg font-bold text-purple-950">📷 사진 첨부 (휴대폰 앨범 또는 파일 선택)</label>
+                    <input type="file" id="postImageFile" accept="image/*" onchange="handleImageFileSelect(event)" class="w-full text-base text-gray-500 file:mr-4 file:py-2.5 file:px-5 file:rounded-2xl file:border-3 file:border-purple-400 file:text-base file:font-bold file:bg-purple-100 file:text-purple-900 hover:file:bg-purple-200 cursor-pointer">
                     <div id="imagePreviewContainer" class="hidden mt-2">
-                        <img id="imagePreview" src="" alt="미리보기" class="w-full h-52 object-cover rounded-3xl border-3 border-purple-300">
+                        <img id="imagePreview" src="" alt="미리보기" class="w-full h-52 object-cover rounded-3xl border-4 border-purple-400">
                     </div>
                 </div>
 
                 <div>
-                    <label id="contentLabel" class="block text-base font-bold text-amber-950 mb-1">💬 내용</label>
-                    <textarea id="postContent" rows="4" placeholder="친구들과 나눌 이야기를 자유롭게 적어주세요..." class="w-full px-4 py-3 text-lg crayon-input focus:outline-none focus:ring-4 focus:ring-rose-200 font-bold bg-white" required></textarea>
+                    <label id="contentLabel" class="block text-lg font-bold text-amber-950 mb-1">💬 내용</label>
+                    <textarea id="postContent" rows="4" placeholder="친구들과 나눌 이야기를 자유롭게 적어주세요..." class="crayon-input w-full px-4 py-3 text-lg focus:outline-none focus:ring-4 focus:ring-rose-200 font-bold" required></textarea>
                 </div>
             </form>
 
-            <div class="pt-3 border-t-3 border-rose-200">
-                <button type="button" onclick="document.getElementById('postForm').requestSubmit()" class="w-full py-4 bg-rose-400 hover:bg-rose-500 active:scale-95 text-white font-bold text-3xl rounded-3xl crayon-pink transition-all shadow-xl cursor-pointer">
+            <div class="pt-3 border-t-4 border-rose-300">
+                <button type="button" onclick="document.getElementById('postForm').requestSubmit()" class="crayon-stroke w-full py-4 bg-rose-500 hover:bg-rose-600 active:scale-95 text-white font-bold text-3xl rounded-3xl transition-all shadow-xl cursor-pointer border-4 border-rose-700">
                     🖍️ 예쁘게 등록하기 🖍️
                 </button>
             </div>
@@ -358,15 +369,15 @@
 
     <!-- Photo Lightbox Modal -->
     <div id="photoModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 hidden">
-        <div class="bg-[#fffdf0] p-6 sm:p-8 rounded-3xl crayon-yellow max-w-2xl w-full relative max-h-[90vh] overflow-y-auto">
+        <div class="crayon-stroke crayon-box-yellow p-6 sm:p-8 max-w-2xl w-full relative max-h-[90vh] overflow-y-auto">
             <div class="washi-tape-pink"></div>
             <button type="button" onclick="closePhotoModal()" class="absolute top-3 right-4 text-amber-900 hover:text-rose-600 text-4xl font-bold cursor-pointer">&times;</button>
-            <div class="overflow-hidden rounded-3xl bg-black/90 mb-4 max-h-[55vh] flex items-center justify-center border-3 border-amber-300">
+            <div class="overflow-hidden rounded-3xl bg-black/90 mb-4 max-h-[55vh] flex items-center justify-center border-4 border-amber-400">
                 <img id="lightboxImg" src="" alt="확대 사진" class="max-h-[55vh] object-contain">
             </div>
             <h3 id="lightboxTitle" class="title-font text-3xl text-amber-950 mb-2"></h3>
-            <p id="lightboxCaption" class="text-amber-900 text-lg mb-4 font-bold whitespace-pre-line bg-amber-100/60 p-3 rounded-2xl border-2 border-amber-200"></p>
-            <div class="flex items-center justify-between text-base text-amber-800 border-t-2 border-amber-200 pt-3 font-bold">
+            <p id="lightboxCaption" class="text-amber-950 text-xl mb-4 font-bold whitespace-pre-line bg-amber-100/70 p-4 rounded-2xl border-2 border-amber-300"></p>
+            <div class="flex items-center justify-between text-lg text-amber-900 border-t-2 border-amber-300 pt-3 font-bold">
                 <span id="lightboxAuthor"></span>
                 <span id="lightboxDate"></span>
             </div>
@@ -375,12 +386,12 @@
 
     <!-- Custom Warning Modal -->
     <div id="warningModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 hidden">
-        <div class="bg-[#fffbeb] p-7 rounded-3xl crayon-pink max-w-sm w-full text-center space-y-4 shadow-2xl relative">
+        <div class="crayon-stroke crayon-box-pink p-8 max-w-sm w-full text-center space-y-4 shadow-2xl relative">
             <div class="washi-tape-yellow"></div>
             <div id="warningIcon" class="text-5xl animate-bounce">⚠️</div>
             <h3 id="warningTitle" class="title-font text-3xl text-rose-600">알림</h3>
-            <p id="warningText" class="text-amber-950 text-lg font-bold leading-relaxed"></p>
-            <button type="button" onclick="closeWarningModal()" class="w-full py-3 bg-rose-400 hover:bg-rose-500 text-white font-bold text-2xl rounded-2xl crayon-pink cursor-pointer">확인했어요!</button>
+            <p id="warningText" class="text-amber-950 text-xl font-bold leading-relaxed"></p>
+            <button type="button" onclick="closeWarningModal()" class="crayon-stroke w-full py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-bold text-2xl rounded-2xl cursor-pointer border-3 border-rose-700">확인했어요!</button>
         </div>
     </div>
 
@@ -424,7 +435,7 @@
             "최유주", "한찬희", "구재이", "조승우", "조민준"
         ];
 
-        // 욕설 및 비방 차단 단어 목록
+        // 욕설 및 비방 차단 목록
         const BAD_WORDS = ['욕설', '바보', '시발', '개새', '지랄', '병신', '꺼져', '닥쳐', '쓰레기', '죽어', '미친', '새끼', '존나', '느금', '엠창', '따돌림', '장애', '놈', '씨발'];
 
         let posts = [];
@@ -473,7 +484,7 @@
             document.getElementById('passcodeInput').value = '';
         }
 
-        // 실시간 동기화 감지 (onSnapshot)
+        // 실시간 데이터 감지 (onSnapshot)
         function initFirestoreListener() {
             const q = query(postsColRef, orderBy("createdAt", "desc"));
             onSnapshot(q, (snapshot) => {
@@ -496,13 +507,13 @@
             const photoSec = document.getElementById('sectionPhotoGallery');
 
             if (tabName === 'free') {
-                freeBtn.className = "flex-1 py-3.5 px-4 font-bold text-2xl transition-all flex items-center justify-center gap-2 crayon-pink text-rose-950 shadow-md cursor-pointer";
-                photoBtn.className = "flex-1 py-3.5 px-4 font-bold text-2xl transition-all flex items-center justify-center gap-2 bg-white/80 border-3 border-amber-300 rounded-3xl text-amber-900 hover:bg-amber-100 cursor-pointer";
+                freeBtn.className = "crayon-stroke flex-1 py-4 px-4 font-bold text-2xl sm:text-3xl transition-all flex items-center justify-center gap-2 crayon-box-pink text-rose-950 shadow-md cursor-pointer";
+                photoBtn.className = "crayon-stroke flex-1 py-4 px-4 font-bold text-2xl sm:text-3xl transition-all flex items-center justify-center gap-2 bg-white border-4 border-amber-300 rounded-3xl text-amber-900 hover:bg-amber-50 cursor-pointer";
                 freeSec.classList.remove('hidden');
                 photoSec.classList.add('hidden');
             } else if (tabName === 'photo') {
-                photoBtn.className = "flex-1 py-3.5 px-4 font-bold text-2xl transition-all flex items-center justify-center gap-2 crayon-purple text-purple-950 shadow-md cursor-pointer";
-                freeBtn.className = "flex-1 py-3.5 px-4 font-bold text-2xl transition-all flex items-center justify-center gap-2 bg-white/80 border-3 border-amber-300 rounded-3xl text-amber-900 hover:bg-amber-100 cursor-pointer";
+                photoBtn.className = "crayon-stroke flex-1 py-4 px-4 font-bold text-2xl sm:text-3xl transition-all flex items-center justify-center gap-2 crayon-box-purple text-purple-950 shadow-md cursor-pointer";
+                freeBtn.className = "crayon-stroke flex-1 py-4 px-4 font-bold text-2xl sm:text-3xl transition-all flex items-center justify-center gap-2 bg-white border-4 border-amber-300 rounded-3xl text-amber-900 hover:bg-amber-50 cursor-pointer";
                 photoSec.classList.remove('hidden');
                 freeSec.classList.add('hidden');
             }
@@ -523,8 +534,8 @@
 
             if (postsToRender.length === 0) {
                 container.innerHTML = `
-                    <div class="col-span-full bg-white p-10 rounded-3xl text-center text-amber-900 crayon-yellow">
-                        <span class="text-5xl block mb-2">🖍️</span>
+                    <div class="col-span-full crayon-stroke crayon-box-yellow p-10 text-center text-amber-950">
+                        <span class="text-6xl block mb-3">🖍️</span>
                         아직 올라온 이야기가 없어요! 첫 번째 크레파스 글을 남겨주세요!
                     </div>
                 `;
@@ -532,47 +543,47 @@
             }
 
             container.innerHTML = postsToRender.map(post => `
-                <div class="crayon-yellow p-6 flex flex-col justify-between relative bg-white">
+                <div class="crayon-stroke crayon-box-yellow p-6 flex flex-col justify-between relative">
                     <div class="washi-tape-yellow"></div>
                     <div>
-                        <div class="flex items-center justify-between gap-2 border-b-2 border-amber-200 pb-3 mb-3">
+                        <div class="flex items-center justify-between gap-2 border-b-3 border-amber-200 pb-3 mb-3">
                             <div class="flex items-center gap-2">
                                 <span class="text-3xl">${post.sticker || '🌈'}</span>
                                 <div>
                                     <h3 class="title-font text-2xl text-amber-950 leading-snug">${escapeHtml(post.title)}</h3>
-                                    <p class="text-sm text-amber-800 font-bold">✍️ 작성자: <span class="text-rose-600 bg-rose-50 px-2 py-0.5 rounded-lg border border-rose-200">${escapeHtml(post.author)}</span> | 📅 ${post.date}</p>
+                                    <p class="text-base text-amber-800 font-bold">✍️ 작성자: <span class="text-rose-600 bg-rose-100 px-2 py-0.5 rounded-xl border border-rose-300">${escapeHtml(post.author)}</span> | 📅 ${post.date}</p>
                                 </div>
                             </div>
-                            <button type="button" onclick="deletePost('${post.id}')" class="text-rose-400 hover:text-rose-600 p-1 font-bold text-xl cursor-pointer" title="삭제">
+                            <button type="button" onclick="deletePost('${post.id}')" class="text-rose-400 hover:text-rose-600 p-1 font-bold text-2xl cursor-pointer" title="삭제">
                                 🗑️
                             </button>
                         </div>
-                        <p class="notebook-line text-slate-800 text-xl leading-relaxed whitespace-pre-line mb-4 font-bold p-3 rounded-2xl border-2 border-amber-200 bg-[#fffdf0]">${escapeHtml(post.content)}</p>
+                        <p class="notebook-paper text-slate-800 text-xl leading-relaxed whitespace-pre-line mb-4 font-bold p-3.5 rounded-2xl border-2 border-amber-300">${escapeHtml(post.content)}</p>
                     </div>
 
                     <div class="pt-3 border-t-2 border-amber-200">
                         <div class="flex items-center justify-between mb-2">
-                            <button type="button" onclick="toggleLike('${post.id}')" class="flex items-center gap-1.5 px-3.5 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 text-base font-bold rounded-2xl transition-colors cursor-pointer border-2 border-rose-300">
+                            <button type="button" onclick="toggleLike('${post.id}')" class="flex items-center gap-1.5 px-4 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 text-lg font-bold rounded-2xl transition-colors cursor-pointer border-2 border-rose-300 shadow-sm">
                                 <span>❤️</span> 칭찬해요 <span>${post.likes || 0}</span>
                             </button>
-                            <span class="text-sm text-amber-800 font-bold">💬 댓글 ${(post.comments || []).length}개</span>
+                            <span class="text-base text-amber-900 font-bold">💬 댓글 ${(post.comments || []).length}개</span>
                         </div>
 
-                        <div class="space-y-2 bg-amber-50/80 p-3 rounded-2xl border-2 border-amber-200">
+                        <div class="space-y-2 bg-amber-100/70 p-3.5 rounded-2xl border-2 border-amber-300">
                             ${(post.comments || []).map(c => `
                                 <div class="bg-white p-2.5 rounded-xl border-2 border-amber-200 text-base">
-                                    <strong class="text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">${escapeHtml(c.author)}:</strong>
+                                    <strong class="text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">${escapeHtml(c.author)}:</strong>
                                     <span class="text-slate-800 font-bold ml-1">${escapeHtml(c.text)}</span>
                                 </div>
                             `).join('')}
 
                             <div class="flex gap-2 pt-1">
-                                <select id="commentAuthor-${post.id}" class="w-36 px-2 py-1 text-sm rounded-xl border-2 border-amber-300 bg-white font-bold text-slate-800">
+                                <select id="commentAuthor-${post.id}" class="w-36 px-2 py-1.5 text-sm rounded-xl border-2 border-amber-400 bg-white font-bold text-slate-800">
                                     <option value="">내 이름</option>
                                     ${ALLOWED_MEMBERS.map(m => `<option value="${m}">${m}</option>`).join('')}
                                 </select>
-                                <input type="text" id="commentText-${post.id}" placeholder="따뜻한 댓글을 남겨주세요..." class="flex-1 px-3 py-1 text-base rounded-xl border-2 border-amber-300 bg-white font-bold">
-                                <button type="button" onclick="addComment('${post.id}')" class="px-3.5 py-1 bg-rose-400 hover:bg-rose-500 text-white text-base font-bold rounded-xl cursor-pointer">등록</button>
+                                <input type="text" id="commentText-${post.id}" placeholder="따뜻한 댓글을 남겨주세요..." class="flex-1 px-3 py-1.5 text-base rounded-xl border-2 border-amber-400 bg-white font-bold">
+                                <button type="button" onclick="addComment('${post.id}')" class="px-4 py-1 bg-rose-500 hover:bg-rose-600 text-white text-base font-bold rounded-xl cursor-pointer shadow">등록</button>
                             </div>
                         </div>
                     </div>
@@ -590,8 +601,8 @@
 
             if (photoPosts.length === 0) {
                 container.innerHTML = `
-                    <div class="col-span-full bg-white p-10 rounded-3xl text-center text-purple-900 crayon-purple">
-                        <span class="text-5xl block mb-2">📸</span>
+                    <div class="col-span-full crayon-stroke crayon-box-purple p-10 text-center text-purple-950">
+                        <span class="text-6xl block mb-3">📸</span>
                         아직 사진이 없어요! 우리반 추억 사진을 실시간으로 올려봐요!
                     </div>
                 `;
@@ -599,10 +610,10 @@
             }
 
             container.innerHTML = photoPosts.map(post => `
-                <div class="crayon-polaroid relative flex flex-col justify-between">
+                <div class="crayon-stroke crayon-polaroid relative flex flex-col justify-between">
                     <div class="washi-tape-pink"></div>
                     <div class="cursor-pointer" onclick="openPhotoModal('${escapeHtml(post.photoUrl)}', '${escapeHtml(post.title)}', '${escapeHtml(post.content)}', '${escapeHtml(post.author)}', '${post.date}')">
-                        <div class="overflow-hidden rounded-2xl bg-gray-100 aspect-video mb-3 border-2 border-amber-200">
+                        <div class="overflow-hidden rounded-2xl bg-gray-100 aspect-video mb-3 border-2 border-amber-200 shadow-inner">
                             <img src="${escapeHtml(post.photoUrl)}" alt="${escapeHtml(post.title)}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
                         </div>
                         <div class="flex items-center justify-between gap-1 mb-1">
@@ -613,17 +624,17 @@
                     </div>
 
                     <div class="pt-2 border-t-2 border-amber-200">
-                        <div class="flex items-center justify-between text-sm text-gray-500 mb-2">
-                            <span class="font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-lg border border-rose-200">✍️ ${escapeHtml(post.author)}</span>
-                            <button type="button" onclick="deletePost('${post.id}')" class="text-rose-400 hover:text-rose-600 p-1 font-bold text-base cursor-pointer" title="삭제">
+                        <div class="flex items-center justify-between text-base text-gray-600 mb-2">
+                            <span class="font-bold text-rose-600 bg-rose-100 px-2 py-0.5 rounded-lg border border-rose-300">✍️ ${escapeHtml(post.author)}</span>
+                            <button type="button" onclick="deletePost('${post.id}')" class="text-rose-400 hover:text-rose-600 p-1 font-bold text-xl cursor-pointer" title="삭제">
                                 🗑️
                             </button>
                         </div>
                         <div class="flex items-center justify-between">
-                            <button type="button" onclick="toggleLike('${post.id}')" class="flex items-center gap-1 text-sm px-3 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-xl cursor-pointer border border-rose-200">
+                            <button type="button" onclick="toggleLike('${post.id}')" class="flex items-center gap-1 text-sm px-3 py-1 bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold rounded-xl cursor-pointer border border-rose-300">
                                 <span>❤️</span> ${post.likes || 0}
                             </button>
-                            <span class="text-xs text-amber-800 font-bold">📅 ${post.date}</span>
+                            <span class="text-sm text-amber-800 font-bold">📅 ${post.date}</span>
                         </div>
                     </div>
                 </div>
