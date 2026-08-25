@@ -48,12 +48,6 @@
             border-radius: 255px 20px 220px 20px/20px 220px 20px 255px;
             box-shadow: 6px 8px 0px #0369a1;
         }
-        .crayon-box-green {
-            background-color: #f0fdf4;
-            border: 5px solid #16a34a;
-            border-radius: 220px 25px 255px 25px/25px 255px 25px 220px;
-            box-shadow: 6px 8px 0px #15803d;
-        }
         .crayon-box-purple {
             background-color: #faf5ff;
             border: 5px solid #9333ea;
@@ -456,8 +450,7 @@
             doc, 
             updateDoc, 
             deleteDoc, 
-            onSnapshot, 
-            query
+            onSnapshot
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // 4학년 5반 Firebase 설정
@@ -488,6 +481,9 @@
         // 욕설 및 비방 차단 목록
         const BAD_WORDS = ['욕설', '바보', '시발', '개새', '지랄', '병신', '꺼져', '닥쳐', '쓰레기', '죽어', '미친', '새끼', '존나', '느금', '엠창', '따돌림', '장애', '놈', '씨발'];
 
+        // 🖼️ 학교 방화벽 및 차단 네트워크에서도 100% 작동하는 오프라인 SVG 데이터 폴백
+        const SVG_IMAGE_FALLBACK = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'><rect width='600' height='400' fill='%23fed7aa'/><text x='50%' y='45%' font-size='60' text-anchor='middle' dominant-baseline='middle'>🖼️</text><text x='50%' y='65%' font-size='26' font-weight='bold' fill='%23451a03' text-anchor='middle' dominant-baseline='middle'>4학년 5반 추억 사진</text></svg>";
+
         let posts = [];
         let activeTab = 'free';
         let currentPhotoData = '';
@@ -501,6 +497,48 @@
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#039;');
+        }
+
+        /**
+         * 🔍 스마트 이미지 추출기:
+         * 데이터베이스의 기존 문서에 들어있는 모든 이미지 형태(imageUrl, photoUrl, imgUrl, picture, photo, image, img, url, src, file, data 등)를
+         * 누락 없이 탐지하여 이미지 주소를 반환합니다.
+         */
+        function getImgSrc(post) {
+            if (!post) return '';
+            
+            // 1. 흔히 사용되는 속성 이름 직접 검사
+            const possibleFields = [
+                post.imageUrl, post.photoUrl, post.imgUrl, post.picture, 
+                post.photo, post.image, post.img, post.url, post.src, 
+                post.fileUrl, post.file, post.data, post.imageData
+            ];
+            
+            for (let val of possibleFields) {
+                if (val && typeof val === 'string' && val.trim().length > 10) {
+                    return val.trim();
+                }
+            }
+
+            // 2. 내용(content) 자체에 이미지 URL이나 base64 데이터가 포함된 경우
+            if (post.content && typeof post.content === 'string') {
+                const c = post.content.trim();
+                if (c.startsWith('data:image/') || c.startsWith('http://') || c.startsWith('https://')) {
+                    return c;
+                }
+            }
+
+            // 3. 문자의 모든 속성을 전수 조사하여 data:image 또는 http 주소 패턴 탐색
+            for (let key in post) {
+                if (typeof post[key] === 'string') {
+                    const str = post[key].trim();
+                    if (str.startsWith('data:image/') || (str.startsWith('http') && (str.includes('.jpg') || str.includes('.png') || str.includes('.webp') || str.includes('.jpeg') || str.includes('firebasestorage')))) {
+                        return str;
+                    }
+                }
+            }
+
+            return '';
         }
 
         window.showWarningModal = function(title, text, icon = '⚠️') {
@@ -546,11 +584,11 @@
                     cloudPosts.push({ id: docSnap.id, ...docSnap.data() });
                 });
                 
-                // Sort by createdAt descending
+                // 최신순 정렬
                 cloudPosts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                 posts = cloudPosts;
 
-                // 샘플 데이터 (초기 상태일 때)
+                // 샘플 데이터 (초기 상태일 때만)
                 if (posts.length === 0) {
                     posts = getSamplePosts();
                 }
@@ -591,7 +629,7 @@
                     sticker: '⚽',
                     title: '체육시간에 다같이 찍은 사진!',
                     content: '오늘 피구 진짜 재미있었다! 다들 수고했어~ 😄',
-                    imageUrl: 'https://placehold.co/600x400/fed7aa/451a03?text=4-5+Class+Photo',
+                    imageUrl: SVG_IMAGE_FALLBACK,
                     date: '2026.03.05',
                     likes: 8,
                     comments: [
@@ -630,11 +668,14 @@
 
         function renderFreePosts(filteredPosts = null) {
             const container = document.getElementById('freePostsContainer');
-            const freePostsList = posts.filter(p => p.type === 'free');
+            const freePostsList = posts.filter(p => p.type === 'free' || !p.type);
             const postsToRender = filteredPosts || freePostsList;
             
             document.getElementById('freePostCount').innerText = freePostsList.length;
-            document.getElementById('photoPostCount').innerText = posts.filter(p => p.type === 'photo').length;
+            
+            // 사진 게시글 개수 산정 (이미지가 존재하는 글 포함)
+            const photoCount = posts.filter(p => p.type === 'photo' || Boolean(getImgSrc(p))).length;
+            document.getElementById('photoPostCount').innerText = photoCount;
 
             if (postsToRender.length === 0) {
                 container.innerHTML = `
@@ -657,7 +698,7 @@
                                     <span class="text-3xl">${post.sticker || '🌈'}</span>
                                     <div>
                                         <h3 class="title-font text-2xl text-amber-950 leading-snug">${escapeHtml(post.title)}</h3>
-                                        <p class="text-base text-amber-800 font-bold">✍️ 작성자: <span class="text-rose-600 bg-rose-100 px-2 py-0.5 rounded-xl border border-rose-300">${escapeHtml(post.author)}</span> | 📅 ${post.date}</p>
+                                        <p class="text-base text-amber-800 font-bold">✍️ 작성자: <span class="text-rose-600 bg-rose-100 px-2 py-0.5 rounded-xl border border-rose-300">${escapeHtml(post.author)}</span> | 📅 ${post.date || ''}</p>
                                     </div>
                                 </div>
                                 <button type="button" onclick="deletePost('${post.id}')" class="text-rose-400 hover:text-rose-600 p-1 font-bold text-2xl cursor-pointer" title="삭제">
@@ -702,7 +743,9 @@
 
         function renderPhotoGallery() {
             const container = document.getElementById('photoGridContainer');
-            const photoPostsList = posts.filter(p => p.type === 'photo');
+            
+            // 스마트 필터: type이 photo이거나, 어떤 형태로든 이미지가 존재하는 게시글은 모두 사진방에 표시!
+            const photoPostsList = posts.filter(p => p.type === 'photo' || Boolean(getImgSrc(p)));
 
             if (photoPostsList.length === 0) {
                 container.innerHTML = `
@@ -714,24 +757,30 @@
                 return;
             }
 
-            container.innerHTML = photoPostsList.map(post => `
+            container.innerHTML = photoPostsList.map(post => {
+                // 스마트 이미지 추출 함수 사용
+                const rawImgSrc = getImgSrc(post);
+                const imgSrc = rawImgSrc || SVG_IMAGE_FALLBACK;
+
+                return `
                 <div class="crayon-polaroid flex flex-col justify-between cursor-pointer" onclick="openPhotoModal('${post.id}')">
                     <div>
-                        <div class="overflow-hidden rounded-2xl bg-slate-100 mb-3 border-3 border-amber-300 h-48 flex items-center justify-center">
-                            <img src="${post.imageUrl || 'https://placehold.co/600x400/fed7aa/451a03?text=4-5+Photo'}" alt="${escapeHtml(post.title)}" class="w-full h-full object-cover">
+                        <div class="overflow-hidden rounded-2xl bg-amber-50 mb-3 border-3 border-amber-300 h-48 flex items-center justify-center relative">
+                            <img src="${imgSrc}" alt="${escapeHtml(post.title)}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='${SVG_IMAGE_FALLBACK}';">
                         </div>
                         <h3 class="title-font text-2xl text-amber-950 mb-1 truncate">${post.sticker || '📸'} ${escapeHtml(post.title)}</h3>
-                        <p class="text-amber-900 text-base font-bold line-clamp-2 mb-2">${escapeHtml(post.content)}</p>
+                        <p class="text-amber-900 text-base font-bold line-clamp-2 mb-2">${escapeHtml(post.content || '')}</p>
                     </div>
                     <div class="flex items-center justify-between text-base text-amber-800 font-bold border-t-2 border-amber-200 pt-2">
-                        <span>✍️ ${escapeHtml(post.author)}</span>
+                        <span>✍️ ${escapeHtml(post.author || '우리반')}</span>
                         <div class="flex items-center gap-2">
                             <span>❤️ ${post.likes || 0}</span>
                             <span>💬 ${(post.comments || []).length}</span>
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
 
         window.openPhotoModal = function(postId) {
@@ -745,11 +794,20 @@
             const post = posts.find(p => p.id === currentModalPostId);
             if (!post) return;
 
-            document.getElementById('lightboxImg').src = post.imageUrl || 'https://placehold.co/600x400/fed7aa/451a03?text=4-5+Photo';
-            document.getElementById('lightboxTitle').innerText = (post.sticker || '📸') + ' ' + post.title;
+            const rawImgSrc = getImgSrc(post);
+            const imgSrc = rawImgSrc || SVG_IMAGE_FALLBACK;
+
+            const lightboxImg = document.getElementById('lightboxImg');
+            lightboxImg.src = imgSrc;
+            lightboxImg.onerror = function() {
+                this.onerror = null;
+                this.src = SVG_IMAGE_FALLBACK;
+            };
+
+            document.getElementById('lightboxTitle').innerText = (post.sticker || '📸') + ' ' + (post.title || '');
             document.getElementById('lightboxCaption').innerText = post.content || '내용 없음';
-            document.getElementById('lightboxAuthor').innerText = '✍️ 작성자: ' + post.author;
-            document.getElementById('lightboxDate').innerText = '📅 ' + post.date;
+            document.getElementById('lightboxAuthor').innerText = '✍️ 작성자: ' + (post.author || '우리반');
+            document.getElementById('lightboxDate').innerText = '📅 ' + (post.date || '');
 
             document.getElementById('lightboxLikesCount').innerText = `좋아요 ${post.likes || 0}`;
             const comments = post.comments || [];
@@ -928,18 +986,37 @@
             const file = e.target.files[0];
             if (!file) return;
 
-            if (file.size > 5 * 1024 * 1024) {
-                showWarningModal('사진 크기 초과', '5MB 이하의 사진 파일만 첨부할 수 있습니다! 📸', '🖼️');
-                e.target.value = '';
-                return;
-            }
-
+            // 📸 초경량 캔버스 압축 (최대 600px, JPEG 60% - 데이터베이스에 100KB 이하로 매우 안정적으로 저장)
             const reader = new FileReader();
             reader.onload = function(evt) {
-                currentPhotoData = evt.target.result;
-                const previewImg = document.getElementById('imagePreview');
-                previewImg.src = currentPhotoData;
-                document.getElementById('imagePreviewContainer').classList.remove('hidden');
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    const maxDim = 600; 
+
+                    if (width > maxDim || height > maxDim) {
+                        if (width > height) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        } else {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    currentPhotoData = canvas.toDataURL('image/jpeg', 0.6);
+                    const previewImg = document.getElementById('imagePreview');
+                    previewImg.src = currentPhotoData;
+                    document.getElementById('imagePreviewContainer').classList.remove('hidden');
+                };
+                img.src = evt.target.result;
             };
             reader.readAsDataURL(file);
         };
@@ -970,6 +1047,7 @@
             const today = new Date();
             const dateStr = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
 
+            // 다중 호환 필드 포함 저장
             const newPostData = {
                 type,
                 author,
@@ -977,6 +1055,8 @@
                 title,
                 content,
                 imageUrl: type === 'photo' ? currentPhotoData : '',
+                photoUrl: type === 'photo' ? currentPhotoData : '',
+                photo: type === 'photo' ? currentPhotoData : '',
                 date: dateStr,
                 likes: 0,
                 comments: [],
@@ -1005,10 +1085,10 @@
                 renderFreePosts();
                 return;
             }
-            const filtered = posts.filter(p => p.type === 'free' && (
-                p.author.toLowerCase().includes(queryStr) ||
-                p.title.toLowerCase().includes(queryStr) ||
-                p.content.toLowerCase().includes(queryStr)
+            const filtered = posts.filter(p => (p.type === 'free' || !p.type) && (
+                (p.author && p.author.toLowerCase().includes(queryStr)) ||
+                (p.title && p.title.toLowerCase().includes(queryStr)) ||
+                (p.content && p.content.toLowerCase().includes(queryStr))
             ));
             renderFreePosts(filtered);
         };
