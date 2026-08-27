@@ -9,7 +9,6 @@
     <!-- Google Fonts (Gaegu, Jua) -->
     <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Jua&display=swap" rel="stylesheet">
     <style>
-        /* 🖍️ 전체 스케치북 모눈종이 배경 */
         body {
             font-family: 'Gaegu', cursive;
             background-color: #fefce8;
@@ -25,7 +24,6 @@
             letter-spacing: -0.5px;
         }
 
-        /* 🖍️ SVG 필터를 통한 울퉁불퉁 진짜 크레파스 테두리 */
         .crayon-stroke {
             filter: url(#crayon-rough);
         }
@@ -61,7 +59,6 @@
             background-color: #ffffff;
         }
 
-        /* 📸 손그림 폴라로이드 사진 테두리 */
         .crayon-polaroid {
             background: #ffffff;
             padding: 1.2rem 1.2rem 2.2rem 1.2rem;
@@ -86,7 +83,6 @@
             box-shadow: 10px 14px 0px #b45309;
         }
 
-        /* 🏷️ 찢어진 마스킹 테이프 효과 */
         .washi-tape-pink {
             position: absolute;
             top: -15px;
@@ -110,12 +106,10 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        /* 공책 줄무늬 노트 */
         .notebook-paper {
             background: repeating-linear-gradient(#ffffff, #ffffff 32px, #fed7aa 34px);
         }
 
-        /* 알록달록 무지개 이름표 */
         .tag-rainbow:nth-child(5n+1) { background: #fee2e2; color: #b91c1c; border: 2px solid #f87171; }
         .tag-rainbow:nth-child(5n+2) { background: #fef3c7; color: #b45309; border: 2px solid #fbbf24; }
         .tag-rainbow:nth-child(5n+3) { background: #dcfce7; color: #15803d; border: 2px solid #4ade80; }
@@ -125,7 +119,6 @@
 </head>
 <body class="min-h-screen text-slate-800 pb-16">
 
-    <!-- 🖍️ 크레파스 질감 렌더링용 SVG 필터 -->
     <svg class="hidden" width="0" height="0">
         <filter id="crayon-rough">
             <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" result="noise" />
@@ -156,7 +149,6 @@
         </div>
     </div>
 
-    <!-- Main Application -->
     <div id="appContainer" class="hidden max-w-5xl mx-auto px-4 py-6">
         
         <!-- Header Banner -->
@@ -221,7 +213,6 @@
             </div>
         </header>
 
-        <!-- Navigation Tabs -->
         <div class="flex gap-4 mb-8">
             <button type="button" id="tabFreeBoardBtn" onclick="switchTab('free')" class="crayon-stroke flex-1 py-4 px-4 font-bold text-2xl sm:text-3xl transition-all flex items-center justify-center gap-2 crayon-box-pink text-rose-950 shadow-md cursor-pointer">
                 <span>💬</span> 이야기 수다방 (<span id="freePostCount">0</span>)
@@ -263,7 +254,7 @@
 
     </div>
 
-    <!-- New Post Modal -->
+    <!-- New/Edit Post Modal -->
     <div id="postModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 hidden">
         <div class="crayon-stroke crayon-box-pink p-6 sm:p-8 max-w-lg w-full max-h-[90vh] flex flex-col relative shadow-2xl">
             <div class="washi-tape-yellow"></div>
@@ -364,7 +355,7 @@
         </div>
     </div>
 
-    <!-- Photo Lightbox Modal (확대보기 + 좋아요 + 댓글) -->
+    <!-- Photo Lightbox View Modal -->
     <div id="photoModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 hidden">
         <div class="crayon-stroke crayon-box-yellow p-6 sm:p-8 max-w-2xl w-full relative max-h-[90vh] overflow-y-auto">
             <div class="washi-tape-pink"></div>
@@ -432,7 +423,7 @@
         </div>
     </div>
 
-    <!-- Custom Warning Modal -->
+    <!-- Warning Modal -->
     <div id="warningModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 hidden">
         <div class="crayon-stroke crayon-box-pink p-8 max-w-sm w-full text-center space-y-4 shadow-2xl relative">
             <div class="washi-tape-yellow"></div>
@@ -443,7 +434,20 @@
         </div>
     </div>
 
-    <!-- Firebase SDKs & App Logic -->
+    <!-- Confirm Modal -->
+    <div id="confirmModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 hidden">
+        <div class="crayon-stroke crayon-box-pink p-8 max-w-sm w-full text-center space-y-4 shadow-2xl relative">
+            <div class="washi-tape-yellow"></div>
+            <div class="text-5xl animate-bounce">❓</div>
+            <h3 id="confirmTitle" class="title-font text-3xl text-rose-600">확인</h3>
+            <p id="confirmText" class="text-amber-950 text-xl font-bold leading-relaxed"></p>
+            <div class="flex gap-3 pt-2">
+                <button type="button" id="confirmCancelBtn" class="flex-1 py-3 bg-amber-200 hover:bg-amber-300 text-amber-950 font-bold text-2xl rounded-2xl cursor-pointer border-2 border-amber-400">취소</button>
+                <button type="button" id="confirmOkBtn" class="flex-1 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold text-2xl rounded-2xl cursor-pointer border-2 border-rose-700">확인</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -473,10 +477,9 @@
         const db = getFirestore(app);
         const postsColRef = collection(db, "school_posts");
 
-        // GitHub Pages 환경에서 데이터베이스 읽기/쓰기 권한을 안정적으로 확보
         signInAnonymously(auth).catch(err => console.log("인증 처리 중:", err));
 
-        // 4학년 5반 공식 명단 (25명 + 전영주선생님)
+        // 4학년 5반 명단 (25명 + 전영주선생님)
         const ALLOWED_MEMBERS = [
             "전영주선생님",
             "강민정", "고은혁", "김민규", "김보윤", "김영훈", 
@@ -486,16 +489,16 @@
             "최유주", "한찬희", "구재이", "조승우", "조민준"
         ];
 
-        // 욕설 및 비방 차단 목록
+        // 비속어 차단 목록
         const BAD_WORDS = ['욕설', '바보', '시발', '개새', '지랄', '병신', '꺼져', '닥쳐', '쓰레기', '죽어', '미친', '새끼', '존나', '느금', '엠창', '따돌림', '장애', '놈', '씨발'];
 
-        // 🖼️ 학교 방화벽 및 차단 네트워크에서도 100% 작동하는 오프라인 SVG 데이터 폴백
         const SVG_IMAGE_FALLBACK = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'><rect width='600' height='400' fill='%23fed7aa'/><text x='50%' y='45%' font-size='60' text-anchor='middle' dominant-baseline='middle'>🖼️</text><text x='50%' y='65%' font-size='26' font-weight='bold' fill='%23451a03' text-anchor='middle' dominant-baseline='middle'>4학년 5반 추억 사진</text></svg>";
 
         let posts = [];
         let activeTab = 'free';
         let currentPhotoData = '';
         let currentModalPostId = null;
+        let editingPostId = null;
 
         function escapeHtml(str) {
             if (!str) return '';
@@ -507,15 +510,9 @@
                 .replace(/'/g, '&#039;');
         }
 
-        /**
-         * 🔍 스마트 이미지 추출기:
-         * 데이터베이스의 기존 문서에 들어있는 모든 이미지 형태(imageUrl, photoUrl, imgUrl, picture, photo, image, img, url, src, file, data 등)를
-         * 누락 없이 탐지하여 이미지 주소를 반환합니다.
-         */
         function getImgSrc(post) {
             if (!post) return '';
             
-            // 1. 흔히 사용되는 속성 이름 직접 검사
             const possibleFields = [
                 post.imageUrl, post.photoUrl, post.imgUrl, post.picture, 
                 post.photo, post.image, post.img, post.url, post.src, 
@@ -528,7 +525,6 @@
                 }
             }
 
-            // 2. 내용(content) 자체에 이미지 URL이나 base64 데이터가 포함된 경우
             if (post.content && typeof post.content === 'string') {
                 const c = post.content.trim();
                 if (c.startsWith('data:image/') || c.startsWith('http://') || c.startsWith('https://')) {
@@ -536,7 +532,6 @@
                 }
             }
 
-            // 3. 문자의 모든 속성을 전수 조사하여 data:image 또는 http 주소 패턴 탐색
             for (let key in post) {
                 if (typeof post[key] === 'string') {
                     const str = post[key].trim();
@@ -560,12 +555,35 @@
             document.getElementById('warningModal').classList.add('hidden');
         };
 
+        window.showConfirmModal = function(title, text, onConfirm) {
+            document.getElementById('confirmTitle').innerText = title;
+            document.getElementById('confirmText').innerText = text;
+            const okBtn = document.getElementById('confirmOkBtn');
+            const cancelBtn = document.getElementById('confirmCancelBtn');
+            const modal = document.getElementById('confirmModal');
+
+            const cleanup = () => {
+                modal.classList.add('hidden');
+                okBtn.onclick = null;
+                cancelBtn.onclick = null;
+            };
+
+            okBtn.onclick = () => {
+                cleanup();
+                if (onConfirm) onConfirm();
+            };
+            cancelBtn.onclick = () => {
+                cleanup();
+            };
+
+            modal.classList.remove('hidden');
+        };
+
         function containsBadWords(str) {
             if (!str) return false;
             return BAD_WORDS.some(word => str.toLowerCase().includes(word));
         }
 
-        // 우리반 암호 0405 확인
         window.handleUnlock = function(e) {
             e.preventDefault();
             const val = document.getElementById('passcodeInput').value.trim();
@@ -591,11 +609,9 @@
                     cloudPosts.push({ id: docSnap.id, ...docSnap.data() });
                 });
                 
-                // 최신순 정렬
                 cloudPosts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                 posts = cloudPosts;
 
-                // 샘플 데이터 (초기 상태일 때만)
                 if (posts.length === 0) {
                     posts = getSamplePosts();
                 }
@@ -680,7 +696,6 @@
             
             document.getElementById('freePostCount').innerText = freePostsList.length;
             
-            // 사진 게시글 개수 산정 (이미지가 존재하는 글 포함)
             const photoCount = posts.filter(p => p.type === 'photo' || Boolean(getImgSrc(p))).length;
             document.getElementById('photoPostCount').innerText = photoCount;
 
@@ -694,8 +709,18 @@
                 return;
             }
 
+            const memberOptions = ALLOWED_MEMBERS.map(m => `<option value="${m}">${m}</option>`).join('');
+
             container.innerHTML = postsToRender.map(post => {
                 const comments = post.comments || [];
+                const commentsHtml = comments.length === 0 
+                    ? '<p class="text-amber-800 text-base font-bold italic px-1">아직 댓글이 없어요!</p>'
+                    : comments.map(c => `
+                        <div class="text-base text-amber-950 font-bold bg-white/80 px-3 py-1 rounded-xl flex justify-between items-center">
+                            <span><strong class="text-rose-600">${escapeHtml(c.author)}:</strong> ${escapeHtml(c.text)}</span>
+                        </div>
+                    `).join('');
+
                 return `
                     <div class="crayon-stroke crayon-box-yellow p-6 flex flex-col justify-between relative">
                         <div class="washi-tape-yellow"></div>
@@ -708,14 +733,18 @@
                                         <p class="text-base text-amber-800 font-bold">✍️ 작성자: <span class="text-rose-600 bg-rose-100 px-2 py-0.5 rounded-xl border border-rose-300">${escapeHtml(post.author)}</span> | 📅 ${post.date || ''}</p>
                                     </div>
                                 </div>
-                                <button type="button" onclick="deletePost('${post.id}')" class="text-rose-400 hover:text-rose-600 p-1 font-bold text-2xl cursor-pointer" title="삭제">
-                                    🗑️
-                                </button>
+                                <div class="flex items-center gap-1">
+                                    <button type="button" onclick="openEditPostModal('${post.id}')" class="text-amber-800 hover:text-amber-950 p-1 font-bold text-xl cursor-pointer" title="글 수정">
+                                        ✏️
+                                    </button>
+                                    <button type="button" onclick="confirmDeletePost('${post.id}')" class="text-rose-400 hover:text-rose-600 p-1 font-bold text-2xl cursor-pointer" title="글 삭제">
+                                        🗑️
+                                    </button>
+                                </div>
                             </div>
                             <p class="notebook-paper text-slate-800 text-xl leading-relaxed whitespace-pre-line mb-4 font-bold p-3.5 rounded-2xl border-2 border-amber-300">${escapeHtml(post.content)}</p>
                         </div>
 
-                        <!-- 💬 수다방 게시글 댓글 & 좋아요 구역 -->
                         <div class="pt-3 border-t-2 border-amber-200 space-y-3">
                             <div class="flex items-center justify-between">
                                 <button type="button" onclick="toggleLike('${post.id}')" class="flex items-center gap-1.5 px-4 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 text-lg font-bold rounded-2xl transition-all cursor-pointer border-2 border-rose-300 shadow-sm active:scale-95">
@@ -726,17 +755,12 @@
 
                             <div class="space-y-2 bg-amber-50/70 p-3 rounded-2xl border border-amber-200">
                                 <div class="space-y-1.5 max-h-36 overflow-y-auto">
-                                    ${comments.length === 0 ? '<p class="text-amber-800 text-base font-bold italic px-1">아직 댓글이 없어요!</p>' : ''}
-                                    ${comments.map(c => `
-                                        <div class="text-base text-amber-950 font-bold bg-white/80 px-3 py-1 rounded-xl flex justify-between items-center">
-                                            <span><strong class="text-rose-600">${escapeHtml(c.author)}:</strong> ${escapeHtml(c.text)}</span>
-                                        </div>
-                                    `).join('')}
+                                    ${commentsHtml}
                                 </div>
                                 <div class="flex flex-col sm:flex-row gap-1.5 pt-1">
                                     <select id="freeCommentAuthor_${post.id}" class="w-full sm:w-32 px-2 py-1 text-base rounded-xl border-2 border-amber-300 font-bold focus:outline-none bg-white">
                                         <option value="">이름 선택</option>
-                                        ${ALLOWED_MEMBERS.map(m => `<option value="${m}">${m}</option>`).join('')}
+                                        ${memberOptions}
                                     </select>
                                     <input type="text" id="freeCommentInput_${post.id}" placeholder="댓글 달기..." class="flex-1 px-3 py-1 text-base rounded-xl border-2 border-amber-300 font-bold focus:outline-none bg-white">
                                     <button type="button" onclick="addCommentToFreePost('${post.id}')" class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white font-bold text-base rounded-xl cursor-pointer">등록</button>
@@ -750,8 +774,6 @@
 
         function renderPhotoGallery() {
             const container = document.getElementById('photoGridContainer');
-            
-            // 스마트 필터: type이 photo이거나, 어떤 형태로든 이미지가 존재하는 게시글은 모두 사진방에 표시!
             const photoPostsList = posts.filter(p => p.type === 'photo' || Boolean(getImgSrc(p)));
 
             if (photoPostsList.length === 0) {
@@ -765,12 +787,15 @@
             }
 
             container.innerHTML = photoPostsList.map(post => {
-                // 스마트 이미지 추출 함수 사용
                 const rawImgSrc = getImgSrc(post);
                 const imgSrc = rawImgSrc || SVG_IMAGE_FALLBACK;
 
                 return `
-                <div class="crayon-polaroid flex flex-col justify-between cursor-pointer" onclick="openPhotoModal('${post.id}')">
+                <div class="crayon-polaroid flex flex-col justify-between cursor-pointer relative group" onclick="openPhotoModal('${post.id}')">
+                    <div class="absolute top-2 right-2 z-10 flex gap-1 bg-white/90 p-1 rounded-xl shadow border border-amber-300 opacity-90 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button type="button" onclick="event.stopPropagation(); openEditPostModal('${post.id}')" class="px-2 py-1 bg-amber-300 hover:bg-amber-400 text-amber-950 rounded-lg text-xs font-bold border border-amber-500" title="사진 수정">✏️ 수정</button>
+                        <button type="button" onclick="event.stopPropagation(); confirmDeletePost('${post.id}')" class="px-2 py-1 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-xs font-bold border border-rose-700" title="사진 삭제">🗑️ 삭제</button>
+                    </div>
                     <div>
                         <div class="overflow-hidden rounded-2xl bg-amber-50 mb-3 border-3 border-amber-300 h-48 flex items-center justify-center relative">
                             <img src="${imgSrc}" alt="${escapeHtml(post.title)}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='${SVG_IMAGE_FALLBACK}';">
@@ -794,6 +819,11 @@
             currentModalPostId = postId;
             renderPhotoModalContent();
             document.getElementById('photoModal').classList.remove('hidden');
+        };
+
+        window.closePhotoModal = function() {
+            document.getElementById('photoModal').classList.add('hidden');
+            currentModalPostId = null;
         };
 
         function renderPhotoModalContent() {
@@ -832,34 +862,99 @@
             }
         }
 
+        window.toggleLike = async function(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            const newLikes = (post.likes || 0) + 1;
+            post.likes = newLikes;
+
+            try {
+                if (!postId.startsWith('sample_')) {
+                    const docRef = doc(postsColRef, postId);
+                    await updateDoc(docRef, { likes: newLikes });
+                } else {
+                    renderAll();
+                }
+            } catch (e) {
+                console.error("좋아요 업데이트 실패:", e);
+            }
+        };
+
         window.toggleLikeFromModal = async function() {
             if (!currentModalPostId) return;
-            await toggleLike(currentModalPostId);
+            await window.toggleLike(currentModalPostId);
             renderPhotoModalContent();
+        };
+
+        window.addCommentToFreePost = async function(postId) {
+            const authorEl = document.getElementById(`freeCommentAuthor_${postId}`);
+            const inputEl = document.getElementById(`freeCommentInput_${postId}`);
+            if (!authorEl || !inputEl) return;
+
+            const author = authorEl.value;
+            const text = inputEl.value.trim();
+
+            if (!author) {
+                showWarningModal('이름 선택', '댓글을 작성할 이름을 고르고 써주세요!', '✍️');
+                return;
+            }
+            if (!text) {
+                showWarningModal('내용 입력', '댓글 내용을 작성해 주세요!', '💬');
+                return;
+            }
+            if (containsBadWords(text)) {
+                showWarningModal('예쁜 말 사용하기', '고운 말과 예쁜 마음으로 댓글을 써주세요! 🌸', '⚠️');
+                return;
+            }
+
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+
+            const currentComments = post.comments || [];
+            const updatedComments = [...currentComments, { author, text }];
+            post.comments = updatedComments;
+
+            try {
+                if (!postId.startsWith('sample_')) {
+                    const docRef = doc(postsColRef, postId);
+                    await updateDoc(docRef, { comments: updatedComments });
+                } else {
+                    renderAll();
+                }
+            } catch (e) {
+                console.error("댓글 등록 실패:", e);
+            }
+
+            inputEl.value = '';
         };
 
         window.addCommentFromModal = async function() {
             if (!currentModalPostId) return;
-            const authorSelect = document.getElementById('lightboxCommentAuthor');
-            const textInput = document.getElementById('lightboxCommentInput');
-            
-            const author = (authorSelect.value || '').trim();
-            const text = (textInput.value || '').trim();
+            const authorEl = document.getElementById('lightboxCommentAuthor');
+            const inputEl = document.getElementById('lightboxCommentInput');
+            if (!authorEl || !inputEl) return;
 
-            if (!author || !text) {
-                showWarningModal('댓글 작성', '이름을 선택하고 따뜻한 댓글 내용을 입력해 주세요! 💬', '📝');
+            const author = authorEl.value;
+            const text = inputEl.value.trim();
+
+            if (!author) {
+                showWarningModal('이름 선택', '댓글을 작성할 이름을 고르고 써주세요!', '✍️');
                 return;
             }
-
+            if (!text) {
+                showWarningModal('내용 입력', '댓글 내용을 작성해 주세요!', '💬');
+                return;
+            }
             if (containsBadWords(text)) {
-                showWarningModal('예쁜 말 사용하기', '친구를 응원하는 고운 말을 써주세요! 🌸', '⚠️');
+                showWarningModal('예쁜 말 사용하기', '고운 말과 예쁜 마음으로 댓글을 써주세요! 🌸', '⚠️');
                 return;
             }
 
             const post = posts.find(p => p.id === currentModalPostId);
             if (!post) return;
 
-            const updatedComments = [...(post.comments || []), { author, text }];
+            const currentComments = post.comments || [];
+            const updatedComments = [...currentComments, { author, text }];
             post.comments = updatedComments;
 
             try {
@@ -870,76 +965,22 @@
                     renderAll();
                 }
             } catch (e) {
-                renderAll();
+                console.error("댓글 등록 실패:", e);
             }
 
-            textInput.value = '';
+            inputEl.value = '';
             renderPhotoModalContent();
+            renderPhotoGallery();
         };
 
-        window.closePhotoModal = function() {
-            currentModalPostId = null;
-            document.getElementById('photoModal').classList.add('hidden');
-        };
-
-        window.toggleLike = async function(postId) {
-            const post = posts.find(p => p.id === postId);
-            if (!post) return;
-
-            post.likes = (post.likes || 0) + 1;
-            renderAll();
-
-            try {
-                if (!postId.startsWith('sample_')) {
-                    const docRef = doc(postsColRef, postId);
-                    await updateDoc(docRef, { likes: post.likes });
-                }
-            } catch (e) {
-                console.error("좋아요 업데이트 실패:", e);
-            }
-        };
-
-        window.addCommentToFreePost = async function(postId) {
-            const authorSelect = document.getElementById(`freeCommentAuthor_${postId}`);
-            const textInput = document.getElementById(`freeCommentInput_${postId}`);
-
-            const author = (authorSelect.value || '').trim();
-            const text = (textInput.value || '').trim();
-
-            if (!author || !text) {
-                showWarningModal('댓글 작성', '이름을 선택하고 댓글을 입력해 주세요! 💬', '📝');
-                return;
-            }
-
-            if (containsBadWords(text)) {
-                showWarningModal('예쁜 말 사용하기', '친구를 응원하는 고운 말을 써주세요! 🌸', '⚠️');
-                return;
-            }
-
-            const post = posts.find(p => p.id === postId);
-            if (!post) return;
-
-            const updatedComments = [...(post.comments || []), { author, text }];
-            post.comments = updatedComments;
-
-            try {
-                if (!postId.startsWith('sample_')) {
-                    const docRef = doc(postsColRef, postId);
-                    await updateDoc(docRef, { comments: updatedComments });
-                } else {
-                    renderAll();
-                }
-            } catch (e) {
-                renderAll();
-            }
-
-            textInput.value = '';
-            renderFreePosts();
+        window.confirmDeletePost = function(postId, onSuccess) {
+            showConfirmModal('게시글 삭제', '정말 이 게시글을 삭제할까요?', async () => {
+                await deletePost(postId);
+                if (onSuccess) onSuccess();
+            });
         };
 
         window.deletePost = async function(postId) {
-            if (!confirm('정말 이 게시글을 삭제할까요?')) return;
-
             try {
                 if (!postId.startsWith('sample_')) {
                     const docRef = doc(postsColRef, postId);
@@ -954,21 +995,55 @@
         };
 
         window.openNewPostModal = function() {
+            editingPostId = null;
+            document.getElementById('modalTitle').innerHTML = '<span>✏️</span> 새 글 작성하기';
+            document.getElementById('submitPostBtn').innerHTML = '🖍️ 예쁘게 등록하기 🖍️';
+            document.getElementById('postForm').reset();
+            currentPhotoData = '';
+            document.getElementById('imagePreviewContainer').classList.add('hidden');
             document.getElementById('postModal').classList.remove('hidden');
         };
 
         window.openNewPostModalWithMode = function(mode) {
-            const radio = document.querySelector(`input[name="postType"][value="${mode}"]`);
-            if (radio) {
-                radio.checked = true;
-                toggleFormMode(mode);
-            }
             openNewPostModal();
+            const radio = document.querySelector(`input[name="postType"][value="${mode}"]`);
+            if (radio) radio.checked = true;
+            toggleFormMode(mode);
+        };
+
+        window.openEditPostModal = function(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+
+            editingPostId = postId;
+            document.getElementById('modalTitle').innerHTML = '<span>✏️</span> 게시글 수정하기';
+            document.getElementById('submitPostBtn').innerHTML = '🖍️ 수정 완료하기 🖍️';
+
+            const type = post.type || 'free';
+            const radio = document.querySelector(`input[name="postType"][value="${type}"]`);
+            if (radio) radio.checked = true;
+            toggleFormMode(type);
+
+            document.getElementById('postAuthor').value = post.author || '';
+            document.getElementById('postSticker').value = post.sticker || '🌈';
+            document.getElementById('postTitle').value = post.title || '';
+            document.getElementById('postContent').value = post.content || '';
+
+            if (type === 'photo') {
+                currentPhotoData = getImgSrc(post);
+                if (currentPhotoData) {
+                    document.getElementById('imagePreview').src = currentPhotoData;
+                    document.getElementById('imagePreviewContainer').classList.remove('hidden');
+                }
+            }
+
+            document.getElementById('postModal').classList.remove('hidden');
         };
 
         window.closeNewPostModal = function() {
             document.getElementById('postModal').classList.add('hidden');
             document.getElementById('postForm').reset();
+            editingPostId = null;
             currentPhotoData = '';
             document.getElementById('imagePreviewContainer').classList.add('hidden');
         };
@@ -1002,7 +1077,6 @@
                 submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
             }
 
-            // 📸 GitHub Pages 및 인터넷 환경 최적화 (초경량 압축으로 데이터베이스 업로드 100% 성공 보장)
             const reader = new FileReader();
             reader.onload = function(evt) {
                 const img = new Image();
@@ -1076,66 +1150,84 @@
             const today = new Date();
             const dateStr = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
 
-            // 다중 호환 필드 포함 저장
-            const newPostData = {
-                type,
-                author,
-                sticker,
-                title,
-                content,
-                imageUrl: type === 'photo' ? currentPhotoData : '',
-                photoUrl: type === 'photo' ? currentPhotoData : '',
-                photo: type === 'photo' ? currentPhotoData : '',
-                date: dateStr,
-                likes: 0,
-                comments: [],
-                createdAt: Date.now()
-            };
+            if (editingPostId) {
+                const updatePayload = {
+                    type,
+                    author,
+                    sticker,
+                    title,
+                    content,
+                    imageUrl: type === 'photo' ? currentPhotoData : '',
+                    photoUrl: type === 'photo' ? currentPhotoData : '',
+                    photo: type === 'photo' ? currentPhotoData : ''
+                };
 
-            try {
-                await addDoc(postsColRef, newPostData);
-                closeNewPostModal();
-                if (type === 'photo') {
-                    switchTab('photo');
-                } else {
-                    switchTab('free');
+                try {
+                    if (!editingPostId.startsWith('sample_')) {
+                        const docRef = doc(postsColRef, editingPostId);
+                        await updateDoc(docRef, updatePayload);
+                    } else {
+                        const postIndex = posts.findIndex(p => p.id === editingPostId);
+                        if (postIndex !== -1) {
+                            posts[postIndex] = { ...posts[postIndex], ...updatePayload };
+                            renderAll();
+                        }
+                    }
+                    showWarningModal('수정 완료', '글이 예쁘게 수정되었습니다! ✨', '✏️');
+                } catch (e) {
+                    showWarningModal('수정 오류', '수정하는 중 문제가 발생했어요.', '❌');
                 }
-            } catch (err) {
-                console.error("게시글 저장 실패:", err);
-                posts.unshift({ id: 'local_' + Date.now(), ...newPostData });
-                renderAll();
-                closeNewPostModal();
+            } else {
+                const newPost = {
+                    type,
+                    author,
+                    sticker,
+                    title,
+                    content,
+                    imageUrl: type === 'photo' ? currentPhotoData : '',
+                    likes: 0,
+                    comments: [],
+                    date: dateStr,
+                    createdAt: Date.now()
+                };
+
+                try {
+                    await addDoc(postsColRef, newPost);
+                    showWarningModal('등록 완료', '글이 추억보관소에 잘 보관되었어요! 💛', '🎉');
+                } catch (e) {
+                    console.error("추가 실패:", e);
+                    posts.unshift({ id: 'sample_' + Date.now(), ...newPost });
+                    renderAll();
+                    showWarningModal('등록 완료', '글이 성공적으로 등록되었습니다!', '🎉');
+                }
             }
+
+            closeNewPostModal();
         };
 
         window.filterFreePosts = function() {
-            const queryStr = document.getElementById('freeSearchInput').value.toLowerCase().trim();
-            if (!queryStr) {
+            const query = document.getElementById('freeSearchInput').value.trim().toLowerCase();
+            if (!query) {
                 renderFreePosts();
                 return;
             }
+
             const filtered = posts.filter(p => (p.type === 'free' || !p.type) && (
-                (p.author && p.author.toLowerCase().includes(queryStr)) ||
-                (p.title && p.title.toLowerCase().includes(queryStr)) ||
-                (p.content && p.content.toLowerCase().includes(queryStr))
+                (p.title && p.title.toLowerCase().includes(query)) ||
+                (p.content && p.content.toLowerCase().includes(query)) ||
+                (p.author && p.author.toLowerCase().includes(query))
             ));
+
             renderFreePosts(filtered);
         };
 
         window.filterByMember = function(memberName) {
             switchTab('free');
-            const searchInput = document.getElementById('freeSearchInput');
-            searchInput.value = memberName;
+            document.getElementById('freeSearchInput').value = memberName;
             filterFreePosts();
         };
 
-        // DOM Loaded Init
-        window.addEventListener('DOMContentLoaded', () => {
-            // 접속 시 항상 비밀번호 입력창(0405)이 먼저 뜨도록 보장
-            document.getElementById('lockScreen').classList.remove('hidden');
-            document.getElementById('appContainer').classList.add('hidden');
-            initFirestoreListener();
-        });
+        initFirestoreListener();
     </script>
 </body>
 </html>
